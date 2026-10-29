@@ -130,6 +130,6 @@
 .tips { background: #13261f; border: 1px solid #1f4d3d; border-radius: 12px; padding: 12px 14px; margin: 14px 0; font-size: 14px; }
 .tips ul { margin: 6px 0 0; padding-left: 18px; }
 .chapters-done { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 12px 0; }
-.chapters-done div { background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 8px; text-align: center; font-size: 12px; }
+.chapters-done > div { background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 8px; text-align: center; font-size: 12px; }
 .chapters-done svg { width: 14px; height: 14px; }
 .icon-btn { background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 4px 9px; font-size: 13px; }
