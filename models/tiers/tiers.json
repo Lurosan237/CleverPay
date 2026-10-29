@@ -1,0 +1,459 @@
+{
+ "created": "2026-10-29T22:39:22+00:00",
+ "tiers": {
+  "rookie": {
+   "name": "Rookie",
+   "features": [
+    "is_transfer",
+    "is_agent_request",
+    "log_amount",
+    "log_sender_balance_before",
+    "amount_to_balance",
+    "empties_account",
+    "log_receiver_balance_before",
+    "receiver_untracked",
+    "amount_is_round",
+    "hour"
+   ],
+   "world": "mixed",
+   "knows": "The transaction alone: amount, balance, time of day.",
+   "thresholds": {
+    "block": 0.19628350889265572,
+    "review": 0.04708326798385604
+   },
+   "trees": 21,
+   "test": {
+    "adaptive": {
+     "block": {
+      "precision": 0.0909,
+      "recall": 0.0022,
+      "false_alarms_per_10k": 0.5,
+      "recall_by_scenario": {
+       "account_takeover": 0.0,
+       "withdrawal_request": 0.0172,
+       "wrong_transfer": 0.0
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.0,
+       "withdrawal_request/adaptive": 0.0172,
+       "wrong_transfer/adaptive": 0.0
+      }
+     },
+     "review": {
+      "precision": 0.0114,
+      "recall": 0.0022,
+      "false_alarms_per_10k": 4.39,
+      "recall_by_scenario": {
+       "account_takeover": 0.0,
+       "withdrawal_request": 0.0172,
+       "wrong_transfer": 0.0
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.0,
+       "withdrawal_request/adaptive": 0.0172,
+       "wrong_transfer/adaptive": 0.0
+      }
+     },
+     "pr_auc": 0.0343
+    },
+    "patched": {
+     "block": {
+      "precision": 0.6757,
+      "recall": 0.1196,
+      "false_alarms_per_10k": 1.21,
+      "recall_by_scenario": {
+       "account_takeover": 0.1355,
+       "withdrawal_request": 0.4062,
+       "wrong_transfer": 0.0
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.0,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 0.0,
+       "withdrawal_request/adaptive": 0.0,
+       "withdrawal_request/naive": 0.8667,
+       "wrong_transfer/adaptive": 0.0,
+       "wrong_transfer/naive": 0.0,
+       "wrong_transfer/rented": 0.0
+      }
+     },
+     "review": {
+      "precision": 0.3486,
+      "recall": 0.1459,
+      "false_alarms_per_10k": 5.75,
+      "recall_by_scenario": {
+       "account_takeover": 0.1355,
+       "withdrawal_request": 0.4688,
+       "wrong_transfer": 0.0796
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.0,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 0.0,
+       "withdrawal_request/adaptive": 0.0,
+       "withdrawal_request/naive": 1.0,
+       "wrong_transfer/adaptive": 0.0,
+       "wrong_transfer/naive": 0.2,
+       "wrong_transfer/rented": 0.0
+      }
+     },
+     "pr_auc": 0.1661
+    }
+   }
+  },
+  "analyst": {
+   "name": "Analyst",
+   "features": [
+    "is_transfer",
+    "is_agent_request",
+    "log_amount",
+    "log_sender_balance_before",
+    "amount_to_balance",
+    "empties_account",
+    "log_receiver_balance_before",
+    "receiver_untracked",
+    "amount_is_round",
+    "hour",
+    "sender_history",
+    "sender_age_days",
+    "hours_since_sender_last_tx",
+    "amount_zscore",
+    "sender_out_count_24h",
+    "log_sender_out_amount_24h",
+    "recipient_new",
+    "pair_history"
+   ],
+   "world": "mixed",
+   "knows": "Also the sender's habits and whether they have paid this person before.",
+   "thresholds": {
+    "block": 0.4109579027867506,
+    "review": 0.05982944210662742
+   },
+   "trees": 404,
+   "test": {
+    "adaptive": {
+     "block": {
+      "precision": 0.6471,
+      "recall": 0.0735,
+      "false_alarms_per_10k": 0.91,
+      "recall_by_scenario": {
+       "account_takeover": 0.1092,
+       "withdrawal_request": 0.0172,
+       "wrong_transfer": 0.0
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.1092,
+       "withdrawal_request/adaptive": 0.0172,
+       "wrong_transfer/adaptive": 0.0
+      }
+     },
+     "review": {
+      "precision": 0.457,
+      "recall": 0.4499,
+      "false_alarms_per_10k": 12.1,
+      "recall_by_scenario": {
+       "account_takeover": 0.6553,
+       "withdrawal_request": 0.0172,
+       "wrong_transfer": 0.0918
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.6553,
+       "withdrawal_request/adaptive": 0.0172,
+       "wrong_transfer/adaptive": 0.0918
+      }
+     },
+     "pr_auc": 0.3741
+    },
+    "patched": {
+     "block": {
+      "precision": 0.8395,
+      "recall": 0.1627,
+      "false_alarms_per_10k": 0.66,
+      "recall_by_scenario": {
+       "account_takeover": 0.1612,
+       "withdrawal_request": 0.4688,
+       "wrong_transfer": 0.0796
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.0761,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 0.0,
+       "withdrawal_request/adaptive": 0.0,
+       "withdrawal_request/naive": 1.0,
+       "wrong_transfer/adaptive": 0.0,
+       "wrong_transfer/naive": 0.2,
+       "wrong_transfer/rented": 0.0
+      }
+     },
+     "review": {
+      "precision": 0.4252,
+      "recall": 0.3876,
+      "false_alarms_per_10k": 11.04,
+      "recall_by_scenario": {
+       "account_takeover": 0.4029,
+       "withdrawal_request": 0.4688,
+       "wrong_transfer": 0.3274
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 0.6739,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 0.0764,
+       "withdrawal_request/adaptive": 0.0,
+       "withdrawal_request/naive": 1.0,
+       "wrong_transfer/adaptive": 0.0357,
+       "wrong_transfer/naive": 0.6667,
+       "wrong_transfer/rented": 0.15
+      }
+     },
+     "pr_auc": 0.355
+    }
+   }
+  },
+  "expert": {
+   "name": "Expert",
+   "features": [
+    "is_transfer",
+    "is_agent_request",
+    "log_amount",
+    "log_sender_balance_before",
+    "amount_to_balance",
+    "empties_account",
+    "log_receiver_balance_before",
+    "receiver_untracked",
+    "amount_is_round",
+    "hour",
+    "sender_history",
+    "sender_age_days",
+    "hours_since_sender_last_tx",
+    "amount_zscore",
+    "sender_out_count_24h",
+    "log_sender_out_amount_24h",
+    "device_new",
+    "device_history",
+    "hours_since_device_first_seen",
+    "hours_since_sim_swap_or_pin_reset",
+    "hours_since_device_change",
+    "recipient_new",
+    "pair_history",
+    "receiver_age_days",
+    "receiver_history",
+    "receiver_in_count_24h",
+    "receiver_distinct_senders_7d",
+    "receiver_stranger_share_7d",
+    "receiver_cashout_ratio_7d",
+    "agent_new_for_sender",
+    "region_mismatch",
+    "agent_requests_1h",
+    "agent_decline_rate_24h"
+   ],
+   "world": "mixed",
+   "knows": "All 33 behavioural features: phones, SIM swaps, receiving accounts, agents.",
+   "thresholds": {
+    "block": 0.17413687563640692,
+    "review": 0.013788989637266118
+   },
+   "trees": 482,
+   "test": {
+    "adaptive": {
+     "block": {
+      "precision": 0.9016,
+      "recall": 0.755,
+      "false_alarms_per_10k": 1.87,
+      "recall_by_scenario": {
+       "account_takeover": 1.0,
+       "withdrawal_request": 0.7241,
+       "wrong_transfer": 0.0408
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "withdrawal_request/adaptive": 0.7241,
+       "wrong_transfer/adaptive": 0.0408
+      }
+     },
+     "review": {
+      "precision": 0.5603,
+      "recall": 0.8486,
+      "false_alarms_per_10k": 15.08,
+      "recall_by_scenario": {
+       "account_takeover": 1.0,
+       "withdrawal_request": 0.8966,
+       "wrong_transfer": 0.3673
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "withdrawal_request/adaptive": 0.8966,
+       "wrong_transfer/adaptive": 0.3673
+      }
+     },
+     "pr_auc": 0.8614
+    },
+    "patched": {
+     "block": {
+      "precision": 0.9336,
+      "recall": 0.5048,
+      "false_alarms_per_10k": 0.76,
+      "recall_by_scenario": {
+       "account_takeover": 0.6484,
+       "withdrawal_request": 0.875,
+       "wrong_transfer": 0.0531
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 0.3333,
+       "withdrawal_request/adaptive": 0.7647,
+       "withdrawal_request/naive": 1.0,
+       "wrong_transfer/adaptive": 0.0357,
+       "wrong_transfer/naive": 0.1111,
+       "wrong_transfer/rented": 0.0
+      }
+     },
+     "review": {
+      "precision": 0.5075,
+      "recall": 0.6507,
+      "false_alarms_per_10k": 13.31,
+      "recall_by_scenario": {
+       "account_takeover": 0.7473,
+       "withdrawal_request": 0.9688,
+       "wrong_transfer": 0.3274
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 0.5208,
+       "withdrawal_request/adaptive": 0.9412,
+       "withdrawal_request/naive": 1.0,
+       "wrong_transfer/adaptive": 0.25,
+       "wrong_transfer/naive": 0.6444,
+       "wrong_transfer/rented": 0.025
+      }
+     },
+     "pr_auc": 0.6809
+    }
+   }
+  },
+  "elite": {
+   "name": "Elite",
+   "features": [
+    "is_transfer",
+    "is_agent_request",
+    "log_amount",
+    "log_sender_balance_before",
+    "amount_to_balance",
+    "empties_account",
+    "log_receiver_balance_before",
+    "receiver_untracked",
+    "amount_is_round",
+    "hour",
+    "sender_history",
+    "sender_age_days",
+    "hours_since_sender_last_tx",
+    "amount_zscore",
+    "sender_out_count_24h",
+    "log_sender_out_amount_24h",
+    "device_new",
+    "device_history",
+    "hours_since_device_first_seen",
+    "hours_since_sim_swap_or_pin_reset",
+    "hours_since_device_change",
+    "recipient_new",
+    "pair_history",
+    "receiver_age_days",
+    "receiver_history",
+    "receiver_in_count_24h",
+    "receiver_distinct_senders_7d",
+    "receiver_stranger_share_7d",
+    "receiver_cashout_ratio_7d",
+    "agent_new_for_sender",
+    "region_mismatch",
+    "agent_requests_1h",
+    "agent_decline_rate_24h"
+   ],
+   "world": "patched",
+   "knows": "The same features, retrained on rented-account attacks after the game exposed them.",
+   "thresholds": {
+    "block": 0.16501651208362994,
+    "review": 0.017439954463679883
+   },
+   "trees": 391,
+   "test": {
+    "adaptive": {
+     "block": {
+      "precision": 0.884,
+      "recall": 0.7639,
+      "false_alarms_per_10k": 2.27,
+      "recall_by_scenario": {
+       "account_takeover": 1.0,
+       "withdrawal_request": 0.8276,
+       "wrong_transfer": 0.0204
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "withdrawal_request/adaptive": 0.8276,
+       "wrong_transfer/adaptive": 0.0204
+      }
+     },
+     "review": {
+      "precision": 0.4804,
+      "recall": 0.8441,
+      "false_alarms_per_10k": 20.67,
+      "recall_by_scenario": {
+       "account_takeover": 1.0,
+       "withdrawal_request": 0.8966,
+       "wrong_transfer": 0.3469
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "withdrawal_request/adaptive": 0.8966,
+       "wrong_transfer/adaptive": 0.3469
+      }
+     },
+     "pr_auc": 0.8474
+    },
+    "patched": {
+     "block": {
+      "precision": 0.9049,
+      "recall": 0.7967,
+      "false_alarms_per_10k": 1.76,
+      "recall_by_scenario": {
+       "account_takeover": 1.0,
+       "withdrawal_request": 1.0,
+       "wrong_transfer": 0.2478
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 1.0,
+       "withdrawal_request/adaptive": 1.0,
+       "withdrawal_request/naive": 1.0,
+       "wrong_transfer/adaptive": 0.0,
+       "wrong_transfer/naive": 0.3111,
+       "wrong_transfer/rented": 0.35
+      }
+     },
+     "review": {
+      "precision": 0.4869,
+      "recall": 0.8923,
+      "false_alarms_per_10k": 19.82,
+      "recall_by_scenario": {
+       "account_takeover": 1.0,
+       "withdrawal_request": 1.0,
+       "wrong_transfer": 0.6018
+      },
+      "recall_by_strategy": {
+       "account_takeover/adaptive": 1.0,
+       "account_takeover/naive": 1.0,
+       "account_takeover/rented": 1.0,
+       "withdrawal_request/adaptive": 1.0,
+       "withdrawal_request/naive": 1.0,
+       "wrong_transfer/adaptive": 0.3214,
+       "wrong_transfer/naive": 0.7333,
+       "wrong_transfer/rented": 0.65
+      }
+     },
+     "pr_auc": 0.8965
+    }
+   }
+  }
+ }
+}

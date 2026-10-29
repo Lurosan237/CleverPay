@@ -29,6 +29,8 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--seed", type=int, default=SimConfig.seed)
     parser.add_argument("--adaptive-share", type=float, default=FraudConfig.adaptive_share,
                         help="fraction of attacks using the adaptive strategy (0 to 1)")
+    parser.add_argument("--rented-share", type=float, default=0.0,
+                        help="share of takeovers and wrong transfers using rented accounts (0 to 1)")
     parser.add_argument("--promo-start-day", type=int, default=None,
                         help="drift experiment: day a phone promotion starts")
     parser.add_argument("--promo-share", type=float, default=0.0,
@@ -38,7 +40,8 @@ def main(argv: list[str] | None = None) -> None:
 
     cfg = SimConfig(n_users=args.users, days=args.days, seed=args.seed,
                     promo_start_day=args.promo_start_day, promo_new_phone_share=args.promo_share,
-                    fraud=replace(FraudConfig(), adaptive_share=args.adaptive_share))
+                    fraud=replace(FraudConfig(), adaptive_share=args.adaptive_share,
+                                  rented_share=args.rented_share))
     started = time.perf_counter()
     frames = simulate(cfg)
     out = ROOT / "data" / "simulated" / args.name
