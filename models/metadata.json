@@ -1,0 +1,71 @@
+{
+  "model": "LightGBM, behavioural features, trained on the mixed world + adversarial copies",
+  "created": "2026-10-29T14:45:44+00:00",
+  "lightgbm_version": "4.5.0",
+  "features": [
+    "is_transfer",
+    "is_agent_request",
+    "log_amount",
+    "log_sender_balance_before",
+    "amount_to_balance",
+    "empties_account",
+    "log_receiver_balance_before",
+    "receiver_untracked",
+    "amount_is_round",
+    "hour",
+    "sender_history",
+    "sender_age_days",
+    "hours_since_sender_last_tx",
+    "amount_zscore",
+    "sender_out_count_24h",
+    "log_sender_out_amount_24h",
+    "device_new",
+    "device_history",
+    "hours_since_device_first_seen",
+    "hours_since_sim_swap_or_pin_reset",
+    "hours_since_device_change",
+    "recipient_new",
+    "pair_history",
+    "receiver_age_days",
+    "receiver_history",
+    "receiver_in_count_24h",
+    "receiver_distinct_senders_7d",
+    "receiver_stranger_share_7d",
+    "receiver_cashout_ratio_7d",
+    "agent_new_for_sender",
+    "region_mismatch",
+    "agent_requests_1h",
+    "agent_decline_rate_24h"
+  ],
+  "best_iteration": 482,
+  "thresholds": {
+    "block": 0.17413687563640692,
+    "review": 0.013788989637266118
+  },
+  "threshold_rule": {
+    "block": "90% precision on validation days 60-74",
+    "review": "50% precision on validation days 60-74"
+  },
+  "test_adaptive_world": {
+    "block": {
+      "precision": 0.9016,
+      "recall": 0.755,
+      "false_alarms_per_10k": 1.87,
+      "recall_by_scenario": {
+        "account_takeover": 1.0,
+        "withdrawal_request": 0.7241,
+        "wrong_transfer": 0.0408
+      }
+    },
+    "review": {
+      "precision": 0.5603,
+      "recall": 0.8486,
+      "false_alarms_per_10k": 15.08,
+      "recall_by_scenario": {
+        "account_takeover": 1.0,
+        "withdrawal_request": 0.8966,
+        "wrong_transfer": 0.3673
+      }
+    }
+  }
+}

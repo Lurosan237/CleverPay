@@ -1,0 +1,7 @@
+# Only src/, models/ and requirements-serve.txt go into the image
+*
+!src/
+!models/
+!requirements-serve.txt
+**/__pycache__
+**/*.pyc

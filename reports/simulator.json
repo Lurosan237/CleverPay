@@ -1,0 +1,94 @@
+{
+  "worlds": {
+    "naive": {
+      "transactions": 4958560,
+      "customers": 20000,
+      "days": 90,
+      "legit_tx_per_customer_per_day": 2.63,
+      "legit_failed_share": 0.0422,
+      "legit_mean_amount": 5815,
+      "anchors": {
+        "Airtime purchase, mean (FCFA)": {
+          "simulated": 513,
+          "published": 570
+        },
+        "Merchant payment, mean (FCFA)": {
+          "simulated": 2934,
+          "published": 4073
+        }
+      },
+      "type_mix": {
+        "AIRTIME": 0.437,
+        "CASH_IN": 0.167,
+        "PAYMENT": 0.157,
+        "CASH_OUT": 0.15,
+        "TRANSFER": 0.078,
+        "BILL": 0.008,
+        "SALARY": 0.004
+      },
+      "victim_transactions": [
+        {
+          "scenario": "account_takeover",
+          "strategy": "naive",
+          "n": 761
+        },
+        {
+          "scenario": "withdrawal_request",
+          "strategy": "naive",
+          "n": 485
+        },
+        {
+          "scenario": "wrong_transfer",
+          "strategy": "naive",
+          "n": 718
+        }
+      ],
+      "fraud_share_of_successful": 0.00049
+    },
+    "adaptive": {
+      "transactions": 4957939,
+      "customers": 20000,
+      "days": 90,
+      "legit_tx_per_customer_per_day": 2.63,
+      "legit_failed_share": 0.0421,
+      "legit_mean_amount": 5806,
+      "anchors": {
+        "Airtime purchase, mean (FCFA)": {
+          "simulated": 513,
+          "published": 570
+        },
+        "Merchant payment, mean (FCFA)": {
+          "simulated": 2933,
+          "published": 4073
+        }
+      },
+      "type_mix": {
+        "AIRTIME": 0.437,
+        "CASH_IN": 0.167,
+        "PAYMENT": 0.157,
+        "CASH_OUT": 0.15,
+        "TRANSFER": 0.078,
+        "BILL": 0.008,
+        "SALARY": 0.004
+      },
+      "victim_transactions": [
+        {
+          "scenario": "account_takeover",
+          "strategy": "adaptive",
+          "n": 1768
+        },
+        {
+          "scenario": "withdrawal_request",
+          "strategy": "adaptive",
+          "n": 285
+        },
+        {
+          "scenario": "wrong_transfer",
+          "strategy": "adaptive",
+          "n": 736
+        }
+      ],
+      "fraud_share_of_successful": 0.00117
+    }
+  }
+}

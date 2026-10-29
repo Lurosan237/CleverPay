@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.8.6
+      - run: ruff check src tests
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-serve.txt
+      - run: pip install -r requirements.txt
+      # No dataset needed: the tests build small simulated worlds and use the exported model
+      - run: pytest -q
+        env:
+          MOMO_GAME_LOG: "off"
+
+  docker:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: docker build -t momo-fraud .
+      - name: Start
+        run: docker run -d --name momo -p 8000:8000 momo-fraud
+      - name: Wait until healthy
+        run: |
+          for i in $(seq 1 60); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' momo)
+            [ "$status" = "healthy" ] && exit 0
+            curl -sf http://localhost:8000/health && exit 0
+            sleep 2
+          done
+          docker logs momo
+          exit 1
+      - name: Smoke test
+        run: |
+          set -e
+          curl -sf http://localhost:8000/v1/model
+          curl -sf -o /dev/null http://localhost:8000/game
+          read sender receiver < <(curl -sf "http://localhost:8000/v1/accounts?limit=2" |
+            python3 -c "import sys, json; print(*[a['account'] for a in json.load(sys.stdin)])")
+          curl -sf -X POST http://localhost:8000/v1/transactions -H 'Content-Type: application/json' \
+            -d "{\"type\": \"TRANSFER\", \"sender\": \"$sender\", \"receiver\": \"$receiver\", \"amount\": 1000}"
+          curl -sf -X POST http://localhost:8000/game/api/start -H 'Content-Type: application/json' \
+            -d '{"mission": "rogue_agent"}' > /dev/null
+          curl -sf http://localhost:8000/v1/monitoring
+          docker exec momo python -c "import os; assert os.getuid() != 0, 'running as root'"
+      - name: Logs
+        if: always()
+        run: docker logs momo | tail -50

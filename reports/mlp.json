@@ -1,0 +1,125 @@
+{
+  "LightGBM": {
+    "threshold": 0.15802251892088365,
+    "best_iteration": 293,
+    "naive": {
+      "pr_auc": 0.6778857160104478,
+      "recall_at_p90": 0.5891472868217055,
+      "recall_at_p50": 0.6589147286821705,
+      "precision_at_r80": 0.12034883720930233,
+      "fraud_rate": 0.0013027210712608624,
+      "n": 198047,
+      "n_fraud": 258,
+      "precision_at_threshold": 0.8888888888888888,
+      "recall_at_threshold": 0.5891472868217055,
+      "false_alarms_per_10k": 0.9606196502333295,
+      "by_scenario": {
+        "account_takeover/naive": {
+          "caught": 1.0,
+          "n": 106
+        },
+        "withdrawal_request/naive": {
+          "caught": 1.0,
+          "n": 46
+        },
+        "wrong_transfer/naive": {
+          "caught": 0.0,
+          "n": 106
+        }
+      }
+    },
+    "adaptive": {
+      "pr_auc": 0.8655690714441213,
+      "recall_at_p90": 0.7572383073496659,
+      "recall_at_p50": 0.8685968819599109,
+      "precision_at_r80": 0.8,
+      "fraud_rate": 0.0022588694584750367,
+      "n": 198772,
+      "n_fraud": 449,
+      "precision_at_threshold": 0.9018567639257294,
+      "recall_at_threshold": 0.7572383073496659,
+      "false_alarms_per_10k": 1.8656434200773486,
+      "by_scenario": {
+        "account_takeover/adaptive": {
+          "caught": 0.9931740614334471,
+          "n": 293
+        },
+        "withdrawal_request/adaptive": {
+          "caught": 0.7586206896551724,
+          "n": 58
+        },
+        "wrong_transfer/adaptive": {
+          "caught": 0.05102040816326531,
+          "n": 98
+        }
+      }
+    },
+    "train_seconds": 37.2,
+    "latency": {
+      "p50_us": 895.2599998792721,
+      "p95_us": 1060.0312498581843
+    }
+  },
+  "PyTorch MLP": {
+    "threshold": 0.9504592418670654,
+    "best_iteration": 0,
+    "naive": {
+      "pr_auc": 0.919368948794964,
+      "recall_at_p90": 0.8372093023255814,
+      "recall_at_p50": 0.9534883720930233,
+      "precision_at_r80": 0.9137931034482759,
+      "fraud_rate": 0.0013027210712608624,
+      "n": 198047,
+      "n_fraud": 258,
+      "precision_at_threshold": 0.9198113207547169,
+      "recall_at_threshold": 0.7558139534883721,
+      "false_alarms_per_10k": 0.8595017923140316,
+      "by_scenario": {
+        "account_takeover/naive": {
+          "caught": 1.0,
+          "n": 106
+        },
+        "withdrawal_request/naive": {
+          "caught": 0.9782608695652174,
+          "n": 46
+        },
+        "wrong_transfer/naive": {
+          "caught": 0.41509433962264153,
+          "n": 106
+        }
+      }
+    },
+    "adaptive": {
+      "pr_auc": 0.8289221005308631,
+      "recall_at_p90": 0.7483296213808464,
+      "recall_at_p50": 0.8374164810690423,
+      "precision_at_r80": 0.6870229007633588,
+      "fraud_rate": 0.0022588694584750367,
+      "n": 198772,
+      "n_fraud": 449,
+      "precision_at_threshold": 0.9344729344729344,
+      "recall_at_threshold": 0.7305122494432071,
+      "false_alarms_per_10k": 1.1597242881561896,
+      "by_scenario": {
+        "account_takeover/adaptive": {
+          "caught": 0.9795221843003413,
+          "n": 293
+        },
+        "withdrawal_request/adaptive": {
+          "caught": 0.7068965517241379,
+          "n": 58
+        },
+        "wrong_transfer/adaptive": {
+          "caught": 0.0,
+          "n": 98
+        }
+      }
+    },
+    "train_seconds": 72.7,
+    "latency": {
+      "p50_us": 505.3115000919206,
+      "p95_us": 668.9792996894538
+    },
+    "best_epoch": 27
+  }
+}

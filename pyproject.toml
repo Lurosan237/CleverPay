@@ -1,0 +1,19 @@
+[project]
+name = "momofraud"
+version = "0.1.0"
+description = "Mobile money fraud detection, served as a game: try to scam the model."
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

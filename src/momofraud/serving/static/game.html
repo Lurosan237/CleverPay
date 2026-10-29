@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beat the Model</title>
+<style>
+:root {
+  --bg: #0f1412; --panel: #161d1a; --panel-2: #1d2622; --line: #2a3530; --text: #e6ece9; --muted: #8a9a93;
+  --brand: #19b38a; --brand-ink: #062a20; --warn: #f0a935; --bad: #ef5a4c; --good: #3ccf8e;
+  --phone: #f6f4ee; --phone-ink: #1c1f1d; --phone-muted: #6b716d; --phone-line: #e1ddd2;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 var(--sans); }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+a { color: var(--brand); }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 40px; }
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .2px; }
+.logo .mark { width: 28px; height: 28px; border-radius: 8px; background: var(--brand); color: var(--brand-ink);
+  display: grid; place-items: center; font-weight: 800; }
+.logo small { color: var(--muted); font-weight: 400; }
+.langs button { background: none; border: 1px solid var(--line); color: var(--muted); padding: 4px 10px; border-radius: 6px; }
+.langs button.on { color: var(--text); border-color: var(--brand); }
+.disclaimer { color: var(--muted); font-size: 12.5px; border-left: 3px solid var(--warn); padding: 6px 10px; margin: 14px 0 0;
+  background: #1a1a12; }
+
+/* intro */
+.hero { margin: 36px 0 26px; max-width: 760px; }
+.hero h1 { font-size: clamp(28px, 4.6vw, 44px); line-height: 1.08; margin: 0 0 12px; letter-spacing: -.5px; }
+.hero p { color: #b8c6c0; margin: 0 0 10px; }
+.name-row { display: flex; gap: 10px; align-items: center; margin: 18px 0 8px; flex-wrap: wrap; }
+.name-row input { background: var(--panel); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 12px; width: 220px; }
+.missions { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 18px; }
+.mission { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.mission h3 { margin: 0; font-size: 18px; }
+.mission .tag { font: 12px var(--mono); color: var(--brand); text-transform: uppercase; letter-spacing: 1px; }
+.mission p { margin: 0; color: #b8c6c0; font-size: 14px; flex: 1; }
+.mission .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { background: var(--brand); color: var(--brand-ink); border: 0; border-radius: 9px; padding: 9px 14px; font-weight: 650; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); font-weight: 500; }
+.btn.small { padding: 6px 10px; font-size: 13.5px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.how { margin-top: 26px; color: var(--muted); font-size: 13.5px; max-width: 760px; }
+
+/* game */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 18px 0; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.stat .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .8px; }
+.stat .v { font: 600 20px var(--mono); margin-top: 2px; }
+.strikes { display: flex; gap: 6px; margin-top: 6px; }
+.strikes i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bad); display: block; }
+.strikes i.hit { background: var(--bad); }
+.board { display: grid; grid-template-columns: 360px 1fr; gap: 18px; align-items: start; }
+@media (max-width: 860px) { .board { grid-template-columns: 1fr; } }
+
+.phone { background: #0a0d0c; border-radius: 34px; padding: 12px; border: 1px solid #2c3531; box-shadow: 0 20px 50px #0008; }
+.screen { background: var(--phone); color: var(--phone-ink); border-radius: 24px; min-height: 560px; padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.screen .bar { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--phone-muted); }
+.screen h2 { margin: 2px 0 0; font-size: 17px; }
+.card { background: #fff; border: 1px solid var(--phone-line); border-radius: 14px; padding: 12px; }
+.card .lbl { font-size: 12px; color: var(--phone-muted); }
+.card .big { font: 700 22px var(--mono); }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--phone-muted); }
+.field input, .field select { border: 1px solid var(--phone-line); border-radius: 10px; padding: 9px 10px; background: #fff; color: var(--phone-ink); width: 100%; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pbtn { border: 0; border-radius: 12px; padding: 11px 12px; background: var(--brand); color: #fff; font-weight: 650; width: 100%; }
+.pbtn.alt { background: #ecebe5; color: var(--phone-ink); }
+.pbtn.danger { background: transparent; color: var(--bad); border: 1px solid #efc9c4; }
+.pbtn:disabled { opacity: .5; cursor: progress; }
+.accounts { display: flex; flex-direction: column; gap: 6px; font: 13px var(--mono); }
+.accounts div { display: flex; justify-content: space-between; gap: 6px; }
+.accounts .burned { text-decoration: line-through; color: var(--phone-muted); }
+.pill { font: 11px var(--sans); background: #ecebe5; border-radius: 99px; padding: 1px 7px; color: var(--phone-muted); }
+.waits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+
+.desk { display: flex; flex-direction: column; gap: 14px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.panel h3 { margin: 0 0 10px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.gauge { position: relative; height: 16px; border-radius: 8px; overflow: hidden; display: flex; }
+.gauge span { display: block; height: 100%; }
+.gauge .z1 { background: #1f4d3d; } .gauge .z2 { background: #5a4a1d; } .gauge .z3 { background: #5a2420; }
+.needle { position: absolute; top: -4px; width: 4px; height: 24px; background: #fff; border-radius: 2px; transition: left .5s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 0 2px #0008; }
+.gauge-wrap { position: relative; padding: 4px 0 0; }
+.ticks { display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--muted); margin-top: 6px; }
+.verdict { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.verdict .d { font: 700 22px var(--mono); text-transform: uppercase; }
+.verdict .s { color: var(--muted); font: 13px var(--mono); }
+.d.approve { color: var(--good); } .d.review { color: var(--warn); } .d.block { color: var(--bad); }
+.reasons { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.reasons li { display: grid; grid-template-columns: 1fr 90px; gap: 10px; align-items: center; font-size: 14px; }
+.reasons .bar { height: 8px; background: var(--bad); border-radius: 4px; opacity: .85; }
+.log { max-height: 340px; overflow: auto; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.log .e { display: grid; grid-template-columns: 92px 1fr; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 7px; }
+.log .t { font: 12px var(--mono); color: var(--muted); padding-top: 2px; }
+.log .e.block .x { color: var(--bad); } .log .e.review .x { color: var(--warn); } .log .e.approve .x { color: var(--good); }
+.log .e.brief .x { color: #cfe; }
+.muted { color: var(--muted); }
+
+/* end */
+.modal { position: fixed; inset: 0; background: #000b; display: grid; place-items: center; padding: 16px; z-index: 5; }
+.end { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; max-width: 640px; width: 100%; padding: 22px; max-height: 92vh; overflow: auto; }
+.end h2 { margin: 0 0 4px; font-size: 26px; }
+.end .profit { font: 700 34px var(--mono); margin: 10px 0; }
+.end ol { padding-left: 20px; } .end li { margin: 4px 0; }
+.tip { background: #13261f; border: 1px solid #1f4d3d; border-radius: 12px; padding: 12px 14px; margin: 14px 0; }
+table.lb { width: 100%; border-collapse: collapse; font: 13px var(--mono); }
+table.lb td, table.lb th { text-align: left; padding: 5px 4px; border-bottom: 1px solid var(--line); }
+table.lb th { color: var(--muted); font-weight: 500; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.err { color: var(--bad); font-size: 13px; min-height: 18px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><div class="mark">C</div><div>CleverPay <small data-i="desk">· fraud desk simulator</small></div></div>
+    <div class="langs"><button data-lang="en">EN</button> <button data-lang="fr">FR</button></div>
+  </header>
+  <p class="disclaimer" data-i="disclaimer"></p>
+
+  <!-- intro -->
+  <section id="intro">
+    <div class="hero">
+      <h1 data-i="title"></h1>
+      <p data-i="pitch"></p>
+      <p data-i="pitch2"></p>
+      <div class="name-row"><label for="player" class="muted" data-i="name"></label>
+        <input id="player" maxlength="24" placeholder="anonymous"></div>
+    </div>
+    <div class="missions">
+      <div class="mission"><div class="tag" data-i="m1tag"></div><h3 data-i="m1"></h3><p data-i="m1d"></p>
+        <div class="row"><button class="btn" data-start="takeover" data-entry="pin" data-i="m1pin"></button>
+          <button class="btn ghost" data-start="takeover" data-entry="sim" data-i="m1sim"></button></div></div>
+      <div class="mission"><div class="tag" data-i="m2tag"></div><h3 data-i="m2"></h3><p data-i="m2d"></p>
+        <div class="row"><button class="btn" data-start="rogue_agent" data-i="play"></button></div></div>
+      <div class="mission"><div class="tag" data-i="m3tag"></div><h3 data-i="m3"></h3><p data-i="m3d"></p>
+        <div class="row"><button class="btn" data-start="wrong_transfer" data-i="play"></button></div></div>
+    </div>
+    <p class="err" id="intro-err"></p>
+    <p class="how" data-i="how"></p>
+  </section>
+
+  <!-- game -->
+  <section id="game" hidden>
+    <div class="stats">
+      <div class="stat"><div class="k" data-i="profit"></div><div class="v" id="s-profit">0</div></div>
+      <div class="stat"><div class="k" data-i="stolen"></div><div class="v" id="s-stolen">0</div></div>
+      <div class="stat"><div class="k" data-i="costs"></div><div class="v" id="s-costs">0</div></div>
+      <div class="stat"><div class="k" data-i="strikes"></div><div class="strikes" id="s-strikes"></div></div>
+      <div class="stat"><div class="k" data-i="clock"></div><div class="v" id="s-clock" style="font-size:15px">-</div></div>
+      <div class="stat"><div class="k" data-i="left"></div><div class="v" id="s-left">-</div></div>
+    </div>
+    <div class="board">
+      <div class="phone"><div class="screen">
+        <div class="bar"><span id="p-carrier">CleverPay</span><span id="p-time">--:--</span></div>
+        <h2 id="p-title"></h2>
+        <div id="controls"></div>
+        <p class="err" id="err"></p>
+      </div></div>
+      <div class="desk">
+        <div class="panel">
+          <h3 data-i="lastcheck"></h3>
+          <div id="verdict-empty" class="muted" data-i="noattempt"></div>
+          <div id="verdict" hidden>
+            <div class="verdict"><span class="d" id="v-d"></span><span class="s" id="v-s"></span></div>
+            <div class="gauge-wrap"><div class="gauge"><span class="z1" id="z1"></span><span class="z2" id="z2"></span><span class="z3" id="z3"></span></div>
+              <div class="needle" id="needle" style="left:0"></div></div>
+            <div class="ticks"><span>0.1%</span><span data-i="t-review"></span><span data-i="t-block"></span><span>100%</span></div>
+            <ul class="reasons" id="v-reasons"></ul>
+          </div>
+        </div>
+        <div class="panel"><h3 data-i="log"></h3><div class="log" id="log"></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="end" hidden><div class="end">
+  <h2 id="end-title"></h2>
+  <div class="muted" id="end-sub"></div>
+  <div class="profit" id="end-profit"></div>
+  <div id="end-caught"></div>
+  <div class="tip"><strong data-i="protect"></strong><div id="end-tips"></div></div>
+  <h3 data-i="leaderboard" style="font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px"></h3>
+  <table class="lb" id="end-lb"></table>
+  <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
+    <button class="btn" id="again" data-i="again"></button>
+    <button class="btn ghost" id="close" data-i="review_log"></button>
+  </div>
+</div></div>
+
+<script>
+const I18N = {
+  en: {
+    desk: "· fraud desk simulator",
+    disclaimer: "CleverPay is a fictional brand made up for this game. It is not affiliated with any real company. Every account, person and amount is simulated.",
+    title: "Can you beat the fraud model?",
+    pitch: "Play the scammer against a real machine-learning model trained to catch mobile-money fraud. Every move you make is scored live, by exactly the same code that serves the API.",
+    pitch2: "When it catches you, the fraud desk tells you why. When it doesn't, you've found a blind spot, and your attempt is logged so the model can learn from it.",
+    name: "Your name for the leaderboard", play: "Play",
+    m1tag: "Mission 1 · account takeover", m1: "Empty the account",
+    m1d: "You have a victim's PIN. Move their money to accounts you control before they notice. Rush and you're frozen; wait too long and you're out of time.",
+    m1pin: "Fake agent call (5 days)", m1sim: "SIM swap (36 h)",
+    m2tag: "Mission 2 · rogue agent", m2: "Withdrawal requests",
+    m2d: "You're a cash-out agent. Send withdrawal requests to random customers and hope some approve by mistake. Most will decline, and the model watches every decline.",
+    m3tag: "Mission 3 · \"sent by mistake\"", m3: "The refund trick",
+    m3d: "Call people and claim you sent them money by mistake. The ones who believe you \"refund\" it. Choose your amounts and your receiving numbers carefully.",
+    how: "How it's scored: the model sees 33 behavioural features computed from the network's history (devices, recipients, agents, timing). Transactions above the review threshold are held and the customer is warned; above the block threshold they're stopped. Thresholds were set for 50% and 90% precision on held-out data.",
+    profit: "Profit", stolen: "Stolen", costs: "Costs", strikes: "Strikes", clock: "Game clock", left: "Hours left",
+    lastcheck: "Fraud desk · last check", noattempt: "No transaction scored yet. Make your first move.",
+    "t-review": "review", "t-block": "block", log: "What happened",
+    protect: "How real people protect themselves", leaderboard: "Leaderboard", again: "Play again", review_log: "Look at the log",
+    approve: "approved", review: "held for review", block: "blocked", score: "fraud score",
+    caught_title: "Caught.", time_title: "Time's up.", quit_title: "You walked away.",
+    sub: (n) => `${n} scored attempts`, gave: "What gave you away:", clean: "The model never flagged you. That's a blind spot: your attempts are logged for retraining.",
+    victim: "Victim", balance: "Balance", yours: "Your accounts", amount: "Amount (FCFA)", to: "To",
+    send: "Send", airtime: "Buy 500 airtime (warm-up)", open: "New number (500)", rent: "Rent old account (10,000)",
+    wait: "Wait", quit: "Give up", agent: "Agent", requests: "Requests", reqamount: "Amount", targets: "Targets", spread: "Spread over",
+    local: "Same town", national: "Whole country", varied: "Varied", sendreq: "Send requests",
+    numbers: "Your numbers", call: "Call someone", using: "Receiving number", claimed: "Claimed amount (FCFA)",
+    title_takeover: "Account takeover", title_rogue_agent: "Rogue agent", title_wrong_transfer: "\"Sent by mistake\"",
+    rented: "rented", burned: "flagged", starting: "Building your private copy of the network…", lb_none: "No runs yet.",
+    player: "Player", outcome: "Outcome", attempts: "Tries",
+  },
+  fr: {
+    desk: "· simulateur de cellule anti-fraude",
+    disclaimer: "CleverPay est une marque fictive inventée pour ce jeu. Elle n'est affiliée à aucune entreprise réelle. Tous les comptes, personnes et montants sont simulés.",
+    title: "Pouvez-vous déjouer le modèle anti-fraude ?",
+    pitch: "Jouez l'arnaqueur face à un vrai modèle d'apprentissage automatique entraîné à détecter la fraude au mobile money. Chaque action est évaluée en direct, par exactement le même code que l'API.",
+    pitch2: "Quand il vous attrape, la cellule anti-fraude vous dit pourquoi. Quand il vous rate, vous avez trouvé un angle mort, et votre tentative est enregistrée pour que le modèle en tire des leçons.",
+    name: "Votre nom pour le classement", play: "Jouer",
+    m1tag: "Mission 1 · prise de contrôle", m1: "Vider le compte",
+    m1d: "Vous avez le code PIN d'une victime. Transférez son argent vers vos comptes avant qu'elle ne s'en rende compte. Trop vite, le compte est gelé ; trop lentement, le temps est écoulé.",
+    m1pin: "Faux appel d'agent (5 jours)", m1sim: "Changement de SIM (36 h)",
+    m2tag: "Mission 2 · agent véreux", m2: "Demandes de retrait",
+    m2d: "Vous êtes agent de retrait. Envoyez des demandes de retrait à des clients au hasard en espérant que certains acceptent par erreur. La plupart refusent, et le modèle voit chaque refus.",
+    m3tag: "Mission 3 · « envoyé par erreur »", m3: "L'arnaque au remboursement",
+    m3d: "Appelez des gens en prétendant leur avoir envoyé de l'argent par erreur. Ceux qui vous croient vous le « rendent ». Choisissez bien vos montants et vos numéros de réception.",
+    how: "Comment ça marche : le modèle voit 33 indicateurs de comportement calculés à partir de l'historique du réseau (téléphones, destinataires, agents, horaires). Au-dessus du seuil de vérification, la transaction est suspendue et le client averti ; au-dessus du seuil de blocage, elle est arrêtée. Les seuils visent 50 % et 90 % de précision sur des données de validation.",
+    profit: "Gain net", stolen: "Volé", costs: "Coûts", strikes: "Avertissements", clock: "Horloge du jeu", left: "Heures restantes",
+    lastcheck: "Cellule anti-fraude · dernier contrôle", noattempt: "Aucune transaction évaluée. À vous de jouer.",
+    "t-review": "vérif.", "t-block": "blocage", log: "Ce qui s'est passé",
+    protect: "Comment les vraies personnes se protègent", leaderboard: "Classement", again: "Rejouer", review_log: "Voir le journal",
+    approve: "accepté", review: "suspendu", block: "bloqué", score: "score de fraude",
+    caught_title: "Attrapé.", time_title: "Temps écoulé.", quit_title: "Vous avez abandonné.",
+    sub: (n) => `${n} tentatives évaluées`, gave: "Ce qui vous a trahi :", clean: "Le modèle ne vous a jamais signalé. C'est un angle mort : vos tentatives sont enregistrées pour le réentraînement.",
+    victim: "Victime", balance: "Solde", yours: "Vos comptes", amount: "Montant (FCFA)", to: "Vers",
+    send: "Envoyer", airtime: "Acheter 500 de crédit (échauffement)", open: "Nouveau numéro (500)", rent: "Louer un vieux compte (10 000)",
+    wait: "Attendre", quit: "Abandonner", agent: "Agent", requests: "Demandes", reqamount: "Montant", targets: "Cibles", spread: "Étalées sur",
+    local: "Même ville", national: "Tout le pays", varied: "Variés", sendreq: "Envoyer les demandes",
+    numbers: "Vos numéros", call: "Appeler quelqu'un", using: "Numéro de réception", claimed: "Montant annoncé (FCFA)",
+    title_takeover: "Prise de contrôle", title_rogue_agent: "Agent véreux", title_wrong_transfer: "« Envoyé par erreur »",
+    rented: "loué", burned: "signalé", starting: "Création de votre copie privée du réseau…", lb_none: "Aucune partie pour l'instant.",
+    player: "Joueur", outcome: "Fin", attempts: "Essais",
+  },
+};
+const WAITS = { en: { "10m": "10 min", "2h": "2 h", "1d": "1 day" }, fr: { "10m": "10 min", "2h": "2 h", "1d": "1 jour" } };
+const OUTCOMES = { en: { caught: "caught", time_up: "time up", quit: "quit" }, fr: { caught: "attrapé", time_up: "temps écoulé", quit: "abandon" } };
+
+let lang = "en", state = null, thresholds = { review: 0.0138, block: 0.174 }, busy = false;
+try { lang = localStorage.getItem("cp-lang") || (navigator.language || "en").slice(0, 2); } catch (e) {}
+if (!I18N[lang]) lang = "en";
+const T = (k) => I18N[lang][k] ?? k;
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => (n == null ? "-" : Math.round(n).toLocaleString(lang === "fr" ? "fr-FR" : "en-US"));
+const pct = (p) => { const v = p * 100; return (v < 1 ? v.toPrecision(2) : v.toFixed(1)) + "%"; };
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i]").forEach((el) => { el.textContent = T(el.dataset.i); });
+  document.querySelectorAll("[data-lang]").forEach((b) => b.classList.toggle("on", b.dataset.lang === lang));
+  if (state) render();
+}
+document.querySelectorAll("[data-lang]").forEach((b) => b.addEventListener("click", () => {
+  lang = b.dataset.lang; try { localStorage.setItem("cp-lang", lang); } catch (e) {} applyLang();
+}));
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || data));
+  return data;
+}
+
+fetch("/v1/model").then((r) => r.json()).then((m) => { if (m.thresholds) thresholds = m.thresholds; }).catch(() => {});
+
+document.querySelectorAll("[data-start]").forEach((b) => b.addEventListener("click", async () => {
+  if (busy) return;
+  busy = true; $("intro-err").innerHTML = `<span class="spinner"></span> ${esc(T("starting"))}`;
+  $("intro-err").style.color = "var(--muted)";
+  try {
+    const player = $("player").value.trim() || "anonymous";
+    state = await api("/game/api/start", { mission: b.dataset.start, entry: b.dataset.entry || "pin", lang, player });
+    $("intro").hidden = true; $("game").hidden = false; $("intro-err").textContent = "";
+    render();
+  } catch (e) { $("intro-err").style.color = ""; $("intro-err").textContent = e.message; }
+  busy = false;
+}));
+
+async function act(body) {
+  if (busy || !state || state.over) return;
+  busy = true; $("err").textContent = "";
+  document.querySelectorAll("#controls button").forEach((b) => (b.disabled = true));
+  try { state = await api(`/game/api/sessions/${state.id}`, body); }
+  catch (e) { $("err").textContent = e.message; }
+  busy = false; render();
+}
+
+const logScale = (p) => Math.min(1, Math.max(0, (Math.log10(Math.max(p, 1e-3)) + 3) / 3)); // 0.1% .. 100%
+
+function renderVerdict() {
+  const last = [...state.log].reverse().find((e) => e.score != null);
+  $("verdict").hidden = !last; $("verdict-empty").hidden = !!last;
+  if (!last) return;
+  const d = last.kind === "block" ? "block" : last.kind === "review" ? "review" : "approve";
+  $("v-d").className = "d " + d; $("v-d").textContent = T(d);
+  $("v-s").textContent = `${T("score")} ${pct(last.score)}`;
+  const r = logScale(thresholds.review), k = logScale(thresholds.block);
+  $("z1").style.width = r * 100 + "%"; $("z2").style.width = (k - r) * 100 + "%"; $("z3").style.width = (1 - k) * 100 + "%";
+  $("needle").style.left = `calc(${logScale(last.score) * 100}% - 2px)`;
+  const reasons = last.reasons || [];
+  const max = Math.max(0.01, ...reasons.map((x) => x.contribution));
+  $("v-reasons").innerHTML = reasons.map((x) =>
+    `<li><span>${esc(x.text)}</span><span class="bar" style="width:${Math.round(90 * x.contribution / max)}px"></span></li>`).join("");
+}
+
+function accountsHtml() {
+  return `<div class="accounts">${state.owned.map((a) => `<div class="${a.burned ? "burned" : ""}"><span>${esc(a.account)}
+    ${a.rented ? `<span class="pill">${T("rented")}</span>` : ""}${a.burned ? ` <span class="pill">${T("burned")}</span>` : ""}</span>
+    <span>${fmt(a.balance)}</span></div>`).join("")}</div>`;
+}
+const opts = (list, sel) => list.map(([v, l]) => `<option value="${esc(v)}" ${v === sel ? "selected" : ""}>${esc(l)}</option>`).join("");
+const waitsHtml = () => `<div class="field">${T("wait")}<div class="waits">${["10m", "2h", "1d"].map((w) =>
+  `<button class="pbtn alt" data-wait="${w}">${WAITS[lang][w]}</button>`).join("")}</div></div>`;
+
+function controlsHtml() {
+  const m = state.mission, usable = state.owned.filter((a) => !a.burned);
+  if (m === "takeover") {
+    return `<div class="card"><div class="lbl">${T("victim")} · ${esc(state.victim.name)} · ${esc(state.victim.account)}</div>
+        <div class="big">${fmt(state.victim.balance)} FCFA</div></div>
+      <div class="card"><div class="lbl">${T("yours")}</div>${accountsHtml()}</div>
+      <div class="grid2"><label class="field">${T("amount")}<input id="c-amount" type="number" min="100" step="100" value="5000"></label>
+        <label class="field">${T("to")}<select id="c-to">${opts(usable.map((a) => [a.account, a.account + (a.rented ? " ★" : "")]))}</select></label></div>
+      <button class="pbtn" id="c-send">${T("send")}</button>
+      <div class="grid2"><button class="pbtn alt" id="c-open">${T("open")}</button><button class="pbtn alt" id="c-rent">${T("rent")}</button></div>
+      <button class="pbtn alt" id="c-airtime">${T("airtime")}</button>
+      ${waitsHtml()}<button class="pbtn danger" id="c-quit">${T("quit")}</button>`;
+  }
+  if (m === "rogue_agent") {
+    return `<div class="card"><div class="lbl">${T("agent")}</div><div class="big">${esc(state.agent)}</div></div>
+      <div class="grid2"><label class="field">${T("requests")}<select id="c-count">${opts([["10", "10"], ["30", "30"], ["100", "100"]], "30")}</select></label>
+        <label class="field">${T("reqamount")}<select id="c-ramount">${opts([["5000", "5 000"], ["25000", "25 000"], ["varied", T("varied")]], "25000")}</select></label>
+        <label class="field">${T("targets")}<select id="c-targets">${opts([["local", T("local")], ["national", T("national")]], "national")}</select></label>
+        <label class="field">${T("spread")}<select id="c-spread">${opts(["10m", "2h", "1d"].map((w) => [w, WAITS[lang][w]]), "2h")}</select></label></div>
+      <button class="pbtn" id="c-requests">${T("sendreq")}</button>
+      ${waitsHtml()}<button class="pbtn danger" id="c-quit">${T("quit")}</button>`;
+  }
+  return `<div class="card"><div class="lbl">${T("numbers")}</div>${accountsHtml()}</div>
+    <div class="grid2"><label class="field">${T("claimed")}<select id="c-amount">${opts([["2000", "2 000"], ["5000", "5 000"], ["15000", "15 000"], ["30000", "30 000"]], "5000")}</select></label>
+      <label class="field">${T("using")}<select id="c-to">${opts(usable.map((a) => [a.account, a.account + (a.rented ? " ★" : "")]))}</select></label></div>
+    <button class="pbtn" id="c-call" ${usable.length ? "" : "disabled"}>${T("call")}</button>
+    <div class="grid2"><button class="pbtn alt" id="c-open">${T("open")}</button><button class="pbtn alt" id="c-rent">${T("rent")}</button></div>
+    ${waitsHtml()}<button class="pbtn danger" id="c-quit">${T("quit")}</button>`;
+}
+
+function bindControls() {
+  const on = (id, fn) => { const el = $(id); if (el) el.addEventListener("click", fn); };
+  document.querySelectorAll("[data-wait]").forEach((b) => b.addEventListener("click", () => act({ action: "wait", duration: b.dataset.wait })));
+  on("c-send", () => act({ action: "steal", to: $("c-to").value, amount: Number($("c-amount").value) }));
+  on("c-call", () => act({ action: "call", to: $("c-to").value, amount: Number($("c-amount").value) }));
+  on("c-open", () => act({ action: "open" }));
+  on("c-rent", () => act({ action: "rent" }));
+  on("c-airtime", () => act({ action: "airtime", amount: 500 }));
+  on("c-quit", () => act({ action: "quit" }));
+  on("c-requests", () => act({ action: "requests", count: Number($("c-count").value), request_amount: $("c-ramount").value,
+    targets: $("c-targets").value, spread: $("c-spread").value }));
+}
+
+function render() {
+  const s = state;
+  $("s-profit").textContent = fmt(s.profit); $("s-stolen").textContent = fmt(s.stolen); $("s-costs").textContent = fmt(s.costs);
+  $("s-profit").style.color = s.profit > 0 ? "var(--good)" : s.profit < 0 ? "var(--bad)" : "";
+  $("s-strikes").innerHTML = Array.from({ length: s.max_strikes }, (_, i) => `<i class="${i < s.strikes ? "hit" : ""}"></i>`).join("");
+  $("s-clock").textContent = s.clock.slice(0, 16).replace("T", " "); $("s-left").textContent = s.hours_left;
+  $("p-time").textContent = s.clock.slice(11, 16);
+  $("p-title").textContent = T("title_" + s.mission);
+  // keep what the player typed or picked across re-renders
+  const kept = {};
+  document.querySelectorAll("#controls input, #controls select").forEach((el) => (kept[el.id] = el.value));
+  $("controls").innerHTML = controlsHtml(); bindControls();
+  Object.entries(kept).forEach(([id, v]) => {
+    const el = $(id);
+    if (el && (el.tagName !== "SELECT" || [...el.options].some((o) => o.value === v))) el.value = v;
+  });
+  $("controls").style.display = "flex"; $("controls").style.flexDirection = "column"; $("controls").style.gap = "10px";
+  if (s.over) document.querySelectorAll("#controls button").forEach((b) => (b.disabled = true));
+  $("log").innerHTML = [...s.log].reverse().map((e) =>
+    `<div class="e ${e.kind}"><span class="t">${esc(e.time.slice(5, 16).replace("T", " "))}</span><span class="x">${esc(e.text)}${
+      e.score != null ? ` <span class="muted" style="font:12px var(--mono)">(${pct(e.score)})</span>` : ""}</span></div>`).join("");
+  renderVerdict();
+  if (s.over && !s._shown) { s._shown = true; showEnd(); }
+}
+
+function showEnd() {
+  const s = state;
+  $("end-title").textContent = T({ caught: "caught_title", time_up: "time_title", quit: "quit_title" }[s.outcome] || "time_title");
+  $("end-sub").textContent = T("sub")(s.attempts);
+  $("end-profit").textContent = `${fmt(s.profit)} FCFA`;
+  $("end-profit").style.color = s.profit > 0 ? "var(--good)" : "var(--bad)";
+  $("end-caught").innerHTML = s.caught_by.length
+    ? `<strong>${esc(T("gave"))}</strong><ol>${s.caught_by.map(([t, n]) => `<li>${esc(t)} <span class="muted">×${n}</span></li>`).join("")}</ol>`
+    : `<p>${esc(T("clean"))}</p>`;
+  $("end-tips").textContent = s.tips || "";
+  $("end-lb").innerHTML = s.leaderboard.length
+    ? `<tr><th>#</th><th>${T("player")}</th><th>${T("profit")}</th><th>${T("attempts")}</th><th>${T("outcome")}</th></tr>` +
+      s.leaderboard.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.player)}</td><td>${fmt(r.profit)}</td><td>${r.attempts}</td><td>${esc(OUTCOMES[lang][r.outcome] || r.outcome)}</td></tr>`).join("")
+    : `<tr><td class="muted">${T("lb_none")}</td></tr>`;
+  $("end").hidden = false;
+}
+$("close").addEventListener("click", () => ($("end").hidden = true));
+$("again").addEventListener("click", () => { $("end").hidden = true; $("controls").innerHTML = ""; $("game").hidden = true; $("intro").hidden = false; state = null; });
+
+applyLang();
+</script>
+</body>
+</html>

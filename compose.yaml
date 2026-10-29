@@ -1,0 +1,16 @@
+# docker compose up --build    ->  http://localhost:8000/game
+services:
+  api:
+    build: .
+    image: momo-fraud
+    ports:
+      - "8000:8000"
+    environment:
+      MOMO_DEMO_USERS: "3000"
+      MOMO_GAME_LOG: /app/data/game/attempts.jsonl
+    volumes:
+      - game-attempts:/app/data/game
+    restart: unless-stopped
+
+volumes:
+  game-attempts:

@@ -1,0 +1,19 @@
+# Python 3.10+
+# Run time: the API and the game
+-r requirements-serve.txt
+
+# Data pipeline, experiments
+pyarrow==18.1.0
+scikit-learn==1.6.1
+
+# Benchmark client and test client
+aiohttp==3.14.5
+httpx==0.28.1
+httpx2==2.14.0  # last version supporting Python 3.10
+
+# Optional: PyTorch baseline (python -m momofraud.mlp)
+# torch
+
+# Development
+pytest==8.3.4
+ruff==0.8.6
