@@ -19,6 +19,7 @@ img, svg { max-width: 100%; }
 [hidden] { display: none !important; }
 
 .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+@media (max-width: 600px) { .topbar { position: static !important; } .nav a { padding: 5px 8px; font-size: 13.5px; } }
 .topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
 .topbar .wrap { display: flex; align-items: center; gap: 14px; min-height: 58px; flex-wrap: wrap; }
 .logo { display: flex; align-items: center; gap: 9px; font-weight: 700; color: var(--text); text-decoration: none; }
