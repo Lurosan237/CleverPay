@@ -194,7 +194,7 @@ ROW_TYPES = {
 }
 SCENARIOS = ("", "account_takeover", "withdrawal_request", "wrong_transfer")
 ROLES = ("", "victim_debit", "mule_cashout", "attempt", "warmup")
-STRATEGIES = ("", "naive", "adaptive")
+STRATEGIES = ("", "naive", "adaptive", "rented")
 
 
 def _legit_cash_out(sim: Simulation, t: int, person: int, amount: float) -> None:

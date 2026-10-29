@@ -24,6 +24,12 @@ wrong_transfer
     victims are also talked into dialling a code that leaks their PIN (-> takeover).
     naive:    a handful of scammer numbers reused for every victim, round amounts.
     adaptive: a different recipient each time, ordinary-looking amounts.
+
+rented (takeovers and wrong transfers, only when FraudConfig.rented_share > 0)
+    The money goes to an ordinary customer's account rented out to the fraudster: years of
+    normal history, no sudden stream of strangers, and the money is not withdrawn quickly.
+    Takeovers also wait one to three days and take small round amounts. Added after the
+    game's scripted players showed the model was blind to it (reports/game_strategies.md).
 """
 
 from __future__ import annotations
@@ -47,8 +53,19 @@ def _label(scenario: str, role: str, strategy: str, attack_id: int) -> Label:
     return Label(scenario=scenario, role=role, strategy=strategy, attack_id=attack_id)
 
 
-def _strategy(sim: Simulation) -> str:
+def _strategy(sim: Simulation, rented_allowed: bool = False) -> str:
+    # The extra draw only happens when rented attacks are on, so other worlds don't change
+    if rented_allowed and sim.cfg.fraud.rented_share > 0 and sim.rng.random() < sim.cfg.fraud.rented_share:
+        return "rented"
     return "adaptive" if sim.rng.random() < sim.cfg.fraud.adaptive_share else "naive"
+
+
+def _rented_account(sim: Simulation, exclude: int) -> int:
+    """An ordinary customer's account, rented out to the fraudster."""
+    while True:
+        account = int(sim.rng.choice(sim.pop.customers))
+        if account != exclude:
+            return account
 
 
 def _business_hours(sim: Simulation, t: float) -> float:
@@ -79,7 +96,7 @@ def schedule_all(sim: Simulation) -> None:
     n_takeovers = rng.poisson(f.takeovers_per_10k_users_per_month * cfg.n_users / 10_000 * months)
     for victim in rng.choice(customers, size=n_takeovers, p=weights):
         entry = "SIM_SWAP" if rng.random() < 0.4 else "PIN_RESET"
-        sim.schedule(rng.uniform(0, horizon * 0.97), takeover_start, int(victim), _strategy(sim), entry)
+        sim.schedule(rng.uniform(0, horizon * 0.97), takeover_start, int(victim), _strategy(sim, True), entry)
 
     for _ in range(rng.poisson(f.withdrawal_campaigns_per_month * months)):
         agent = int(rng.choice(pop.rogue_agents))
@@ -89,7 +106,7 @@ def schedule_all(sim: Simulation) -> None:
     n_wrong = rng.poisson(f.wrong_transfer_victims_per_10k_users_per_month * cfg.n_users / 10_000 * months)
     for victim in rng.choice(customers, size=n_wrong, p=weights):
         t = _business_hours(sim, rng.uniform(0, horizon * 0.97))
-        sim.schedule(t, wrong_transfer, int(victim), _strategy(sim), sim.new_attack_id())
+        sim.schedule(t, wrong_transfer, int(victim), _strategy(sim, True), sim.new_attack_id())
 
 
 # -- account takeover ---------------------------------------------------------------------
@@ -109,6 +126,19 @@ def takeover_start(sim: Simulation, t: int, victim: int, strategy: str, entry: s
     if strategy == "naive":
         sim.schedule(t + rng.uniform(5 * MINUTE, 60 * MINUTE), takeover_drain,
                      victim, attacker_device, strategy, attack_id, 1, 1, 1.0)
+        return
+
+    if strategy == "rented":
+        # Patient: one to three days, a warm-up, then small round amounts to one rented account
+        act_at = _business_hours(sim, t + rng.uniform(24 * HOUR, 72 * HOUR))
+        if entry == "SIM_SWAP":
+            act_at = max(t + HOUR, min(act_at, sim.blocked_until[victim] - HOUR))
+        sim.schedule(act_at - rng.uniform(10 * MINUTE, 60 * MINUTE), _warmup, victim, attacker_device, attack_id)
+        account = _rented_account(sim, victim)
+        parts = int(rng.integers(3, 7))
+        for i in range(parts):
+            sim.schedule(act_at + i * rng.uniform(1 * HOUR, 3 * HOUR), takeover_drain,
+                         victim, attacker_device, strategy, attack_id, i + 1, parts, 1.0, account)
         return
 
     act_at = _business_hours(sim, t + rng.uniform(2 * HOUR, 36 * HOUR))
@@ -141,6 +171,9 @@ def takeover_drain(sim: Simulation, t: int, victim: int, device: int, strategy: 
     if strategy == "naive":
         amount = np.floor(balance / (1 + TRANSFER_TAX))  # everything, after the transfer tax
         mule = _fresh_mule(sim, t)
+    elif strategy == "rented":
+        amount = float(rng.choice([2_000, 3_000, 5_000, 5_000, 10_000]))
+        amount = min(amount, np.floor(balance * 0.9 / 500) * 500)
     else:
         # The total to steal is fixed when the first part runs, from the balance at that moment
         if part == 1:
@@ -173,8 +206,8 @@ def _fresh_mule(sim: Simulation, t: int) -> int:
 
 def on_fraud_credit(sim: Simulation, t: int, receiver: int, amount: float, label: Label) -> None:
     """Mules and scammers withdraw what they receive."""
-    if not sim.pop.tracked[receiver] or label.role != "victim_debit":
-        return
+    if not sim.pop.tracked[receiver] or label.role != "victim_debit" or label.strategy == "rented":
+        return  # rented accounts let the money sit
     rng = sim.rng
     if label.strategy == "naive":
         delay, share = rng.uniform(5 * MINUTE, 30 * MINUTE), 1.0
@@ -240,6 +273,9 @@ def wrong_transfer(sim: Simulation, t: int, victim: int, strategy: str, attack_i
     if strategy == "naive":
         scammer = int(rng.choice(pop.scammers))
         amount = float(rng.choice([1_000, 2_000, 5_000, 10_000]))
+    elif strategy == "rented":
+        scammer = _rented_account(sim, victim)
+        amount = float(rng.choice([2_000, 5_000, 5_000, 15_000]))
     else:
         scammer = int(rng.choice(pop.aged_mules))
         amount = float(max(500, round(rng.lognormal(np.log(4_000), 0.7) / 25) * 25))

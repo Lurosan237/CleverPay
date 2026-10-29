@@ -1,0 +1,9 @@
+{
+  "name": "cleverpay-site",
+  "private": true,
+  "type": "module",
+  "description": "The CleverPay fraud model in the browser: Model Lab and games. No build step.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  }
+}

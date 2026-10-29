@@ -1,8 +1,8 @@
 # Data (downloaded or generated: never committed)
 data/raw/*
 data/processed/*
-data/simulated/
-data/features/
+data/simulated
+data/features
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 models/*.joblib
@@ -10,7 +10,7 @@ models/*.joblib
 # Python
 __pycache__/
 *.py[cod]
-.venv/
+.venv
 venv/
 .pytest_cache/
 .ruff_cache/

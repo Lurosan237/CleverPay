@@ -1,0 +1,54 @@
+/* CleverPay site: shared look. CleverPay is a fictional brand. */
+:root {
+  --bg: #0d1210; --bg-2: #121916; --panel: #161e1a; --panel-2: #1c2622; --line: #2a3631;
+  --text: #e8eeea; --muted: #8fa199; --soft: #b9c7c0;
+  --brand: #19b38a; --brand-2: #0f8d6c; --brand-ink: #04261c;
+  --sun: #f2a33a; --sun-2: #e2742b; --bad: #ef5a4c; --warn: #f0b440; --good: #3ccf8e; --info: #6bb6ff;
+  --phone: #f6f4ee; --phone-ink: #1c1f1d; --phone-muted: #6b716d; --phone-line: #e1ddd2;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --sans: "Space Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 14px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 15.5px/1.5 var(--sans); }
+a { color: var(--brand); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+img, svg { max-width: 100%; }
+[hidden] { display: none !important; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.topbar .wrap { display: flex; align-items: center; gap: 14px; min-height: 58px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 9px; font-weight: 700; color: var(--text); text-decoration: none; }
+.logo .mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: var(--brand-ink); display: grid; place-items: center; font-weight: 800; }
+.nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.nav a { color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 8px; font-size: 14.5px; }
+.nav a:hover { color: var(--text); background: var(--panel); }
+.nav a.on { color: var(--text); background: var(--panel-2); }
+.langs { display: flex; gap: 4px; }
+.langs button { background: none; border: 1px solid var(--line); color: var(--muted); padding: 3px 9px; border-radius: 7px; font-size: 13px; }
+.langs button.on { color: var(--text); border-color: var(--brand); }
+.disclaimer { font-size: 12.5px; color: var(--muted); border-left: 3px solid var(--sun); background: #1b1a12; padding: 6px 10px; margin: 12px 0; border-radius: 0 8px 8px 0; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--brand); color: var(--brand-ink); border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 650; text-decoration: none; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); font-weight: 500; }
+.btn.sun { background: var(--sun); color: #2b1600; }
+.btn.small { padding: 6px 11px; font-size: 13.5px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+.panel h3, .kicker { margin: 0 0 10px; font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--mono); }
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: .6px; padding: 3px 8px; border-radius: 99px; border: 1px solid currentColor; }
+.chip.approve { color: var(--good); } .chip.review { color: var(--warn); } .chip.block { color: var(--bad); }
+.grid { display: grid; gap: 14px; }
+footer.site { border-top: 1px solid var(--line); margin-top: 60px; padding: 24px 0 40px; color: var(--muted); font-size: 13.5px; }
+footer.site a { color: var(--soft); }
+.loading { display: flex; align-items: center; gap: 10px; color: var(--muted); padding: 30px 0; }
+.spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

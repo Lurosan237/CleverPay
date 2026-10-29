@@ -67,6 +67,11 @@ class FraudConfig:
     """
 
     adaptive_share: float = 0.5
+    # Share of takeovers and "wrong transfer" scams that use *rented* accounts: ordinary
+    # customers' accounts with years of normal history, rented out to the fraudster, who
+    # lets the money sit instead of withdrawing it. The blind spot the stage 5 game found.
+    # 0 keeps every earlier world exactly as it was.
+    rented_share: float = 0.0
     takeovers_per_10k_users_per_month: float = 120.0
     withdrawal_campaigns_per_month: float = 15.0
     wrong_transfer_victims_per_10k_users_per_month: float = 120.0
