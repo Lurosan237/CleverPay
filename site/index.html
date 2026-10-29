@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CleverPay Fraud Model</title>
+<meta name="description" content="A mobile-money fraud detection model you can test and try to beat, running entirely in your browser.">
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="./css/site.css">
+<style>
+.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 30px; align-items: center; padding: 40px 0 10px; }
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+.hero h1 { font-size: clamp(34px, 5.4vw, 58px); line-height: 1.02; margin: 0 0 14px; letter-spacing: -1px; }
+.hero h1 em { font-style: normal; color: var(--brand); }
+.hero p { color: var(--soft); font-size: 17px; margin: 0 0 10px; }
+.hero-art { width: 100%; height: auto; border-radius: 18px; box-shadow: 0 30px 60px #0008; }
+.doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 34px; }
+.door { display: flex; flex-direction: column; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; color: var(--text); text-decoration: none; transition: border-color .2s, transform .2s; }
+.door:hover { border-color: var(--brand); transform: translateY(-2px); }
+.door.game:hover { border-color: var(--sun); }
+.door .tag { font: 600 11.5px var(--mono); letter-spacing: 1px; text-transform: uppercase; color: var(--brand); }
+.door.game .tag { color: var(--sun); }
+.door h2 { margin: 0; font-size: 22px; }
+.door p { margin: 0; color: var(--soft); font-size: 14.5px; flex: 1; }
+.door .go { font-weight: 650; color: var(--brand); }
+.door.game .go { color: var(--sun); }
+.numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 40px; }
+.numbers div { border-left: 3px solid var(--brand); padding: 4px 0 4px 12px; }
+.numbers b { display: block; font: 700 28px var(--mono); }
+.numbers span { color: var(--muted); font-size: 14px; }
+.about { margin-top: 46px; max-width: 820px; color: var(--soft); }
+.about h2 { color: var(--text); font-size: 24px; }
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script type="module">
+import { chrome, lang, onLang, REPO } from "./js/common.js";
+import { heroArt } from "./js/game/art.js";
+chrome("home");
+const T = {
+  en: {
+    h1: "A fraud model you can <em>test</em>, and try to beat.",
+    p1: "A mobile-money fraud detector trained on a simulated network of 20,000 people in Cameroon, with the three scams that hit people there most: account takeovers, rogue agents and the \"sent by mistake\" refund trick.",
+    p2: "Everything runs in your browser: the same feature engine and LightGBM models as the Python code, with exact SHAP explanations.",
+    doors: [
+      ["lab", "", "For the curious", "Model Lab", "Build a transaction and watch four models score it live, with the reasons in plain English or French. Compare how well each one is trained, and see the drift monitor at work.", "Open the lab →"],
+      ["play", "game", "The game", "Launch Day", "Five chapters against a real model. Two storylines, four difficulty levels, a security level that reacts to you, inside tips, and Patch Day, when the model learns your tricks.", "Play →"],
+      ["classic", "", "The original", "Classic", "The first version of the game: three quick missions against the production model, as it was built in stage 5.", "Play the classic →"],
+    ],
+    numbers: [["33", "behavioural features, computed point-in-time"], ["85%", "of adaptive fraud caught by the production model at 50% precision"], ["82%", "of rented-account attacks caught after the patch, from 27% before"], ["0", "differences between the browser and Python on 400 replayed transactions"]],
+    aboutTitle: "What's behind it",
+    about: "A simulator with naive and adaptive fraudsters; features that only use what was known before each transaction; LightGBM with thresholds chosen on validation days; SHAP turned into sentences; a FastAPI service, Docker image, CI and drift monitoring. The game found a blind spot (money sent to rented old accounts); the simulator was extended with it and the model retrained. That patched model is the Elite level.",
+    code: "Code, reports and tests on GitHub",
+  },
+  fr: {
+    h1: "Un modèle anti-fraude à <em>tester</em>, et à déjouer.",
+    p1: "Un détecteur de fraude au mobile money entraîné sur un réseau simulé de 20 000 personnes au Cameroun, avec les trois arnaques les plus courantes là-bas : piratage de compte, agents véreux et le faux « envoyé par erreur ».",
+    p2: "Tout tourne dans votre navigateur : le même moteur de variables et les mêmes modèles LightGBM que le code Python, avec des explications SHAP exactes.",
+    doors: [
+      ["lab", "", "Pour les curieux", "Labo du modèle", "Composez une transaction et regardez quatre modèles l'évaluer en direct, avec les raisons en français ou en anglais. Comparez leur entraînement et voyez le moniteur de dérive à l'œuvre.", "Ouvrir le labo →"],
+      ["play", "game", "Le jeu", "Launch Day", "Cinq chapitres face à un vrai modèle. Deux histoires, quatre niveaux de difficulté, un niveau de sécurité qui réagit, des tuyaux d'initié, et le jour du correctif, où le modèle apprend vos astuces.", "Jouer →"],
+      ["classic", "", "L'original", "Classique", "La première version du jeu : trois missions rapides face au modèle de production, telle que construite à l'étape 5.", "Jouer au classique →"],
+    ],
+    numbers: [["33", "variables de comportement, calculées à l'instant t"], ["85 %", "de la fraude adaptative détectée par le modèle de production à 50 % de précision"], ["82 %", "des attaques par comptes loués détectées après le correctif, contre 27 % avant"], ["0", "différence entre le navigateur et Python sur 400 transactions rejouées"]],
+    aboutTitle: "Ce qu'il y a derrière",
+    about: "Un simulateur avec des fraudeurs naïfs et adaptatifs ; des variables qui n'utilisent que ce qui était connu avant chaque transaction ; LightGBM avec des seuils choisis sur des jours de validation ; SHAP transformé en phrases ; un service FastAPI, une image Docker, de l'intégration continue et une surveillance de dérive. Le jeu a trouvé un angle mort (l'argent envoyé à de vieux comptes loués) ; le simulateur l'a intégré et le modèle a été réentraîné. Ce modèle corrigé, c'est le niveau Elite.",
+    code: "Code, rapports et tests sur GitHub",
+  },
+};
+function render() {
+  const t = T[lang];
+  document.getElementById("app").innerHTML = `
+    <section class="hero"><div><h1>${t.h1}</h1><p>${t.p1}</p><p class="muted">${t.p2}</p></div><div>${heroArt()}</div></section>
+    <div class="doors">${t.doors.map(([href, cls, tag, h, p, go]) => `<a class="door ${cls}" href="./${href}.html"><span class="tag">${tag}</span><h2>${h}</h2><p>${p}</p><span class="go">${go}</span></a>`).join("")}</div>
+    <div class="numbers">${t.numbers.map(([b, s]) => `<div><b>${b}</b><span>${s}</span></div>`).join("")}</div>
+    <section class="about"><h2>${t.aboutTitle}</h2><p>${t.about}</p><p><a href="${REPO}" target="_blank" rel="noopener">${t.code} ↗</a></p></section>`;
+}
+render();
+onLang(render);
+</script>
+</body>
+</html>

@@ -109,7 +109,12 @@ const ui = { tab: null, lead: null, script: "apologetic", amount: 5000, to: null
   count: 30, reqAmount: "varied", targets: "local", spread: "2h", error: "" };
 
 chrome("play");
-onLang(() => { if (chapter) { chapter.lang = lang; renderPlay(); } else if (!campaign || campaign.done) renderTitle(); });
+let screen = "title";
+onLang(() => {
+  if (screen === "play" && chapter) { chapter.lang = lang; renderPlay(); }
+  else if (screen === "end") renderEnd();
+  else renderTitle();
+});
 
 async function init() {
   try { [world, models] = await Promise.all([loadWorld(), loadModels()]); }
@@ -122,7 +127,7 @@ const save = () => store.set("ld-campaign", JSON.stringify(campaign));
 
 // -- title -----------------------------------------------------------------------------------------
 function renderTitle() {
-  chapter = null;
+  chapter = null; screen = "title"; closeModal();
   const u = U(), st = STORY[sel.storyline][lang];
   const stat = (k) => {
     const m = models[k], a = m.test.adaptive.review, p = m.test.patched.review;
@@ -136,6 +141,7 @@ function renderTitle() {
       <p class="lead">${esc(st.tagline)}</p><p class="muted">${esc(chromeNote())}</p>
       <div class="go-row">${canContinue ? `<button class="btn sun" id="continue">${esc(u.cont(campaign.chapterIndex + 1, models[campaign.difficulty].name))}</button>` : ""}
         <button class="btn ${canContinue ? "ghost" : "sun"}" id="new">${canContinue ? u.newGame : u.play}</button>
+        ${campaign?.done ? `<button class="btn ghost" id="report">${u.report}</button>` : ""}
         <button class="icon-btn" id="mute">${muted ? u.mute[1] : u.mute[0]}</button></div></div>
     <div>${heroArt()}</div></section>
     <div class="pickers">
@@ -152,6 +158,7 @@ function renderTitle() {
     save(); showBriefing();
   });
   app.querySelector("#continue")?.addEventListener("click", showBriefing);
+  app.querySelector("#report")?.addEventListener("click", renderEnd);
   app.querySelector("#mute").addEventListener("click", () => { setMuted(!muted); renderTitle(); });
 }
 const chromeNote = () => (lang === "en"
@@ -192,6 +199,7 @@ function startChapter() {
 
 // -- the game screen ------------------------------------------------------------------------------------
 function renderPlay() {
+  screen = "play";
   const c = chapter, u = U();
   const st = S();
   const keep = {};
@@ -432,6 +440,7 @@ function showResult() {
 
 // -- the end ---------------------------------------------------------------------------------------------
 function renderEnd() {
+  screen = "end";
   const u = U(), st = S();
   const best = JSON.parse(store.get("ld-best", "{}"));
   const key = `${campaign.storyline}:${campaign.difficulty}`;

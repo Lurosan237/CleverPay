@@ -3,8 +3,11 @@
 *Can you scam the model?* A mobile money fraud detector, served as a game where you play
 the fraudster.
 
-> **Status:** all six stages are done: PaySim analysis, simulator, behavioural model, scoring API,
-> the game, and monitoring with Docker and CI. See the roadmap below.
+> **Try it:** https://lurosan237.github.io/CleverPay/ (Model Lab, the Launch Day game and the
+> classic game, all running in your browser).
+>
+> **Status:** all seven stages are done: PaySim analysis, simulator, behavioural model, scoring API,
+> the game, monitoring with Docker and CI, and the public website. See the roadmap below.
 
 > **CleverPay**, the mobile money brand in the game, is fictional. It is not affiliated with any
 > real company, and every account, person and amount in this project is simulated.
@@ -298,6 +301,77 @@ Python 3.10 and 3.12 from a clean checkout (no dataset needed: tests build small
 then the Docker image is built, started, and smoke-tested over HTTP (scoring, the game,
 monitoring, and that it doesn't run as root).
 
+## Stage 7: a website anyone can open
+
+Free Python hosting in 2026 means a server that sleeps and takes a minute to wake up. So the
+website runs **entirely in the visitor's browser**, as static files on GitHub Pages:
+
+- **The engine is ported to JavaScript**: the point-in-time feature state, LightGBM tree
+  evaluation, exact TreeSHAP, the reason sentences (EN/FR) and the decision path.
+  `python -m momofraud.web_export` writes the models as flat trees, a snapshot of a simulated
+  network, and a script of 400+ operations played through the Python code. `npm test` (in
+  `site/`) replays it in JavaScript and checks every feature, score, SHAP value, decision,
+  balance and sentence: they match Python to 1e-12 on features and 1e-10 on scores. This is the
+  training/serving skew problem, solved by a test instead of by hope; CI runs it, and the site is
+  only published if it passes.
+- **Model Lab** (`lab.html`): build a transaction (who receives it, amount, SIM swap or PIN reset
+  and how long ago, which phone, time of day, mule-like receivers, agent request floods) and watch
+  four models score it live, with a SHAP waterfall and the sentences a support agent would read.
+- **Launch Day** (`play.html`): the game, redesigned to be fun (below).
+- **Classic** (`classic.html`): the stage 5 game, unchanged, its Python engine ported so it runs
+  without a server.
+
+### Four models, four difficulty levels
+
+The game's difficulty is not a slider: each level is a separately trained model that knows
+more ([report](reports/tiers.md), `python -m momofraud.tiers`).
+
+| Level | Knows | Fraud caught (adaptive world) | Rented-account attacks caught | False alarms / 10k |
+|---|---|---|---|---|
+| Rookie | the transaction alone | 0% | 0% | 4.4 |
+| Analyst | + sender's habits, past payments to this person | 45% | 11% | 12.1 |
+| Expert | all 33 features (the production model) | 85% | 27% | 15.1 |
+| Elite | the same, retrained on rented-account attacks | 84% | 82% | 20.7 |
+
+Elite closes the loop that stage 5 opened. The scripted players found the production model was
+blind to money sent to rented old accounts. That attack was added to the simulator
+(`--rented-share`, off by default so earlier worlds don't change), a new world was simulated,
+and the model retrained. Elite catches 82% of rented-account attacks instead of 27%, with the
+same recall on everything else. The price is 37% more false alarms, which is the kind of
+trade-off a fraud team has to choose knowingly.
+
+### Making the game fun
+
+Design notes from heist and stealth games (Invisible Inc.'s alarm system in particular) and
+risk/reward design: constant visible pressure, predictable consequences, and losses the player
+can explain.
+
+- **Five chapters, two storylines.** Red team (CleverPay hires you to break the model before
+  launch; your exploits become findings) or Ghost Network (a fictional crew; it ends with the
+  network dismantled by a model that learned its tricks). Same mechanics, both in English and
+  French.
+- **Security level.** Reviews and blocks raise it; each level changes the rules (reviews come
+  sooner, reviewed numbers are blacklisted, blocks come sooner, then lockdown). It cools if you
+  lie low for 12 hours: patience against time.
+- **Money and choices.** A budget carried across chapters, SIM cards, a rental market of old
+  accounts (town, age and price differ, and the owner keeps a cut), call scripts with visible
+  odds, an agent's till you can abandon for a fresh one.
+- **Inside tips.** Pay to see what the model *would* say about your next move: a probe of the
+  real model, shown with its SHAP factors. The fraud desk always explains every flag.
+- **Patch Day.** In week 4 the model is upgraded to the next level, retrained on what players
+  found. Your best trick may stop working. That is how fraud detection works.
+- **Findings.** Anything risky that gets through is logged as a blind spot, with the signals
+  the model let pass. The final report lists them, and every scored attempt can be downloaded as
+  JSON for retraining.
+- Random events, a rival, stars per chapter, sound, portraits drawn in SVG, a mercy rule (move on
+  with zero stars after a failed chapter).
+
+Balancing used scripted bots against every chapter and level (the same idea as stage 5's
+strategies). They showed, for example, that warming up a stolen phone with an airtime purchase
+*raises* the score: the simulator's adaptive fraudsters always do it, so the model learned it as
+a signature. And Elite cannot be beaten on a pure account takeover, which is why the finale lets
+you use every method.
+
 ## Method
 
 - **Time-based split**: train on days 0-11, validate on days 12-13, test once on days 14-16.
@@ -318,6 +392,8 @@ monitoring, and that it doesn't run as root).
       strategies that expose the model's blind spot
 - [x] Stage 6: drift monitoring (PSI, rare-event jumps, score and alert rates) tested on a
       controlled population shift; Docker image; GitHub Actions CI
+- [x] Stage 7: public website: JavaScript engine with parity tests, Model Lab, Launch Day
+      (two storylines, four model levels, Patch Day), classic game; GitHub Pages
 
 ## Running it
 
@@ -383,6 +459,17 @@ python -m momofraud.monitoring report        # reports/drift.md
 docker compose up --build                    # the API and the game in a container
 ```
 
+Stage 7 (the website):
+
+```powershell
+python -m momofraud.sim --adaptive-share 0.5 --rented-share 0.35 --name patched
+python -m momofraud.featurestore patched
+python -m momofraud.tiers                    # the four difficulty models
+python -m momofraud.web_export               # site/data/: models, network snapshot, parity script
+cd site; npm test                            # JavaScript engine == Python engine
+python -m http.server -d site 8000           # then open http://localhost:8000
+```
+
 Tests: `pytest`
 
 ## Project layout
@@ -402,11 +489,15 @@ src/momofraud/
   mlp.py         PyTorch baseline
   train.py       exports the production model and its thresholds
   monitoring.py  drift checks, the live monitor and the drift report
+  tiers.py       the four difficulty models and their metrics
+  web_export.py  models, network snapshot and parity script for the website
   serving/       the API: network state, model + SHAP, reasons (EN/FR), FastAPI app, demo, benchmark,
                  and the game (service.py shared decision path, game.py engine, gameapi.py routes,
                  static/game.html page, strategies.py scripted players)
 models/          the exported model (1.7 MB), its metadata and drift reference
-.github/         CI workflow
+site/            the website: js/engine (the JavaScript port), lab/, game/ (Launch Day), classic/,
+                 test/ (parity and game tests)
+.github/         CI and website workflows
 Dockerfile, compose.yaml
 docs/            design notes
 reports/         generated results

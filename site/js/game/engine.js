@@ -127,11 +127,13 @@ export class Chapter {
   advance(seconds) {
     const target = this.now + Math.max(1, Math.round(seconds));
     // cooling: a pip drops for every 12 h without anything flagged
+    let cooled = false;
     while (this.pips > 0 && target - Math.max(this.lastFlagT, this.cooledUntil) >= 12 * HOUR) {
       this.cooledUntil = Math.max(this.lastFlagT, this.cooledUntil) + 12 * HOUR;
       this.pips -= 1;
-      this.emit("cool", "cooled", { level: this.level });
+      cooled = true;
     }
+    if (cooled) this.emit("cool", "cooled", { level: this.level });
     if (target >= this.deadline) {
       this.net.now = Math.max(this.net.now, this.deadline);
       this.finish("time_up");

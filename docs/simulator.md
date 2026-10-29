@@ -98,3 +98,12 @@ S of customers get a new phone (an ordinary `DEVICE_CHANGE`). The promotion is d
 random stream (`seed + 1`), so the world is identical to the same world without it until day D,
 transaction for transaction. Stage 6 uses `--promo-start-day 78 --promo-share 0.25` on the mixed
 world to check that the drift monitor sees the shift, and what it costs in false alarms.
+
+## Rented-account attacks (stage 7)
+
+`--rented-share S` makes a share S of takeovers and "wrong transfer" scams use *rented*
+accounts: ordinary customers' accounts with years of normal history, rented out to the fraudster,
+who lets the money sit instead of withdrawing it. Takeovers using them also wait one to three
+days, warm up the phone and take small round amounts. This is the blind spot the stage 5 game's
+scripted players found. The extra random draw only happens when S > 0, so every earlier world is
+unchanged. The Elite model (`python -m momofraud.tiers`) is trained on a world with S = 0.35.
