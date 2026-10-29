@@ -1,0 +1,411 @@
+{
+  "experiments": {
+    "Transaction only, trained on naive fraud": {
+      "threshold": 0.642814310401314,
+      "best_iteration": 144,
+      "naive": {
+        "pr_auc": 0.7111236648200895,
+        "recall_at_p90": 0.5,
+        "recall_at_p50": 0.7093023255813954,
+        "precision_at_r80": 0.32142857142857145,
+        "fraud_rate": 0.0013027210712608624,
+        "n": 198047,
+        "n_fraud": 258,
+        "precision_at_threshold": 0.9020979020979021,
+        "recall_at_threshold": 0.5,
+        "false_alarms_per_10k": 0.7078250054350849,
+        "by_scenario": {
+          "account_takeover/naive": {
+            "caught": 0.9811320754716981,
+            "n": 106
+          },
+          "withdrawal_request/naive": {
+            "caught": 0.4782608695652174,
+            "n": 46
+          },
+          "wrong_transfer/naive": {
+            "caught": 0.02830188679245283,
+            "n": 106
+          }
+        }
+      },
+      "adaptive": {
+        "pr_auc": 0.006226623548783226,
+        "recall_at_p90": 0.0,
+        "recall_at_p50": 0.0,
+        "precision_at_r80": 0.00376041868579182,
+        "fraud_rate": 0.0022588694584750367,
+        "n": 198772,
+        "n_fraud": 449,
+        "precision_at_threshold": 0.06666666666666667,
+        "recall_at_threshold": 0.0022271714922048997,
+        "false_alarms_per_10k": 0.705919131921159,
+        "by_scenario": {
+          "account_takeover/adaptive": {
+            "caught": 0.0,
+            "n": 293
+          },
+          "withdrawal_request/adaptive": {
+            "caught": 0.017241379310344827,
+            "n": 58
+          },
+          "wrong_transfer/adaptive": {
+            "caught": 0.0,
+            "n": 98
+          }
+        }
+      }
+    },
+    "Behavioural, trained on naive fraud": {
+      "threshold": 0.0003221959172073144,
+      "best_iteration": 338,
+      "naive": {
+        "pr_auc": 0.9631704919801694,
+        "recall_at_p90": 0.9069767441860465,
+        "recall_at_p50": 0.9728682170542635,
+        "precision_at_r80": 0.990990990990991,
+        "fraud_rate": 0.0013027210712608624,
+        "n": 198047,
+        "n_fraud": 258,
+        "precision_at_threshold": 0.8996138996138996,
+        "recall_at_threshold": 0.9031007751937985,
+        "false_alarms_per_10k": 1.314532152950872,
+        "by_scenario": {
+          "account_takeover/naive": {
+            "caught": 1.0,
+            "n": 106
+          },
+          "withdrawal_request/naive": {
+            "caught": 1.0,
+            "n": 46
+          },
+          "wrong_transfer/naive": {
+            "caught": 0.7641509433962265,
+            "n": 106
+          }
+        }
+      },
+      "adaptive": {
+        "pr_auc": 0.0424634299521667,
+        "recall_at_p90": 0.004454342984409799,
+        "recall_at_p50": 0.011135857461024499,
+        "precision_at_r80": 0.0072868593636142825,
+        "fraud_rate": 0.0022588694584750367,
+        "n": 198772,
+        "n_fraud": 449,
+        "precision_at_threshold": 0.25333333333333335,
+        "recall_at_threshold": 0.042316258351893093,
+        "false_alarms_per_10k": 2.823676527684636,
+        "by_scenario": {
+          "account_takeover/adaptive": {
+            "caught": 0.0,
+            "n": 293
+          },
+          "withdrawal_request/adaptive": {
+            "caught": 0.3275862068965517,
+            "n": 58
+          },
+          "wrong_transfer/adaptive": {
+            "caught": 0.0,
+            "n": 98
+          }
+        }
+      }
+    },
+    "Behavioural, trained on mixed fraud": {
+      "threshold": 0.15802251892088365,
+      "best_iteration": 293,
+      "naive": {
+        "pr_auc": 0.6778857160104478,
+        "recall_at_p90": 0.5891472868217055,
+        "recall_at_p50": 0.6589147286821705,
+        "precision_at_r80": 0.12034883720930233,
+        "fraud_rate": 0.0013027210712608624,
+        "n": 198047,
+        "n_fraud": 258,
+        "precision_at_threshold": 0.8888888888888888,
+        "recall_at_threshold": 0.5891472868217055,
+        "false_alarms_per_10k": 0.9606196502333295,
+        "by_scenario": {
+          "account_takeover/naive": {
+            "caught": 1.0,
+            "n": 106
+          },
+          "withdrawal_request/naive": {
+            "caught": 1.0,
+            "n": 46
+          },
+          "wrong_transfer/naive": {
+            "caught": 0.0,
+            "n": 106
+          }
+        }
+      },
+      "adaptive": {
+        "pr_auc": 0.8655690714441213,
+        "recall_at_p90": 0.7572383073496659,
+        "recall_at_p50": 0.8685968819599109,
+        "precision_at_r80": 0.8,
+        "fraud_rate": 0.0022588694584750367,
+        "n": 198772,
+        "n_fraud": 449,
+        "precision_at_threshold": 0.9018567639257294,
+        "recall_at_threshold": 0.7572383073496659,
+        "false_alarms_per_10k": 1.8656434200773486,
+        "by_scenario": {
+          "account_takeover/adaptive": {
+            "caught": 0.9931740614334471,
+            "n": 293
+          },
+          "withdrawal_request/adaptive": {
+            "caught": 0.7586206896551724,
+            "n": 58
+          },
+          "wrong_transfer/adaptive": {
+            "caught": 0.05102040816326531,
+            "n": 98
+          }
+        }
+      }
+    },
+    "Behavioural, mixed fraud + adversarial copies": {
+      "threshold": 0.17413687563640692,
+      "best_iteration": 482,
+      "naive": {
+        "pr_auc": 0.6583826155890053,
+        "recall_at_p90": 0.5891472868217055,
+        "recall_at_p50": 0.6124031007751938,
+        "precision_at_r80": 0.12729498164014688,
+        "fraud_rate": 0.0013027210712608624,
+        "n": 198047,
+        "n_fraud": 258,
+        "precision_at_threshold": 0.8994082840236687,
+        "recall_at_threshold": 0.5891472868217055,
+        "false_alarms_per_10k": 0.8595017923140316,
+        "by_scenario": {
+          "account_takeover/naive": {
+            "caught": 1.0,
+            "n": 106
+          },
+          "withdrawal_request/naive": {
+            "caught": 1.0,
+            "n": 46
+          },
+          "wrong_transfer/naive": {
+            "caught": 0.0,
+            "n": 106
+          }
+        }
+      },
+      "adaptive": {
+        "pr_auc": 0.8613621411462435,
+        "recall_at_p90": 0.755011135857461,
+        "recall_at_p50": 0.8619153674832962,
+        "precision_at_r80": 0.7578947368421053,
+        "fraud_rate": 0.0022588694584750367,
+        "n": 198772,
+        "n_fraud": 449,
+        "precision_at_threshold": 0.901595744680851,
+        "recall_at_threshold": 0.755011135857461,
+        "false_alarms_per_10k": 1.8656434200773486,
+        "by_scenario": {
+          "account_takeover/adaptive": {
+            "caught": 1.0,
+            "n": 293
+          },
+          "withdrawal_request/adaptive": {
+            "caught": 0.7241379310344828,
+            "n": 58
+          },
+          "wrong_transfer/adaptive": {
+            "caught": 0.04081632653061224,
+            "n": 98
+          }
+        }
+      }
+    }
+  },
+  "gain_importance": {
+    "sender_history": 0.22,
+    "receiver_age_days": 0.1398,
+    "recipient_new": 0.0749,
+    "agent_requests_1h": 0.062,
+    "agent_decline_rate_24h": 0.0519,
+    "empties_account": 0.0473,
+    "hours_since_device_first_seen": 0.0461,
+    "receiver_untracked": 0.0408,
+    "region_mismatch": 0.0383,
+    "receiver_history": 0.0354,
+    "hours_since_sim_swap_or_pin_reset": 0.0286,
+    "pair_history": 0.0279,
+    "log_receiver_balance_before": 0.0249,
+    "log_amount": 0.0242,
+    "hour": 0.0212,
+    "amount_to_balance": 0.02,
+    "hours_since_device_change": 0.0184,
+    "amount_is_round": 0.0132,
+    "hours_since_sender_last_tx": 0.0109,
+    "amount_zscore": 0.01,
+    "log_sender_balance_before": 0.0082,
+    "device_history": 0.0077,
+    "sender_age_days": 0.0067,
+    "is_transfer": 0.0045,
+    "log_sender_out_amount_24h": 0.0039,
+    "is_agent_request": 0.0036,
+    "receiver_stranger_share_7d": 0.0032,
+    "receiver_cashout_ratio_7d": 0.0026,
+    "receiver_distinct_senders_7d": 0.0018,
+    "sender_out_count_24h": 0.0013,
+    "receiver_in_count_24h": 0.0005,
+    "agent_new_for_sender": 0.0001,
+    "device_new": 0.0001
+  },
+  "ablation": {
+    "sender": {
+      "pr_auc": 0.8529891050078285,
+      "recall_at_p90": 0.7661469933184856,
+      "recall_at_p50": 0.8285077951002228,
+      "precision_at_r80": 0.7045009784735812,
+      "fraud_rate": 0.0022588694584750367,
+      "n": 198772,
+      "n_fraud": 449,
+      "precision_at_threshold": 0.9216216216216216,
+      "recall_at_threshold": 0.7594654788418709,
+      "false_alarms_per_10k": 1.4622610589795433,
+      "by_scenario": {
+        "account_takeover/adaptive": {
+          "caught": 0.9931740614334471,
+          "n": 293
+        },
+        "withdrawal_request/adaptive": {
+          "caught": 0.8103448275862069,
+          "n": 58
+        },
+        "wrong_transfer/adaptive": {
+          "caught": 0.030612244897959183,
+          "n": 98
+        }
+      }
+    },
+    "device": {
+      "pr_auc": 0.5765392539292223,
+      "recall_at_p90": 0.24053452115812918,
+      "recall_at_p50": 0.6013363028953229,
+      "precision_at_r80": 0.23391812865497075,
+      "fraud_rate": 0.0022588694584750367,
+      "n": 198772,
+      "n_fraud": 449,
+      "precision_at_threshold": 0.8794326241134752,
+      "recall_at_threshold": 0.27616926503340755,
+      "false_alarms_per_10k": 0.8571875173328358,
+      "by_scenario": {
+        "account_takeover/adaptive": {
+          "caught": 0.2935153583617747,
+          "n": 293
+        },
+        "withdrawal_request/adaptive": {
+          "caught": 0.6206896551724138,
+          "n": 58
+        },
+        "wrong_transfer/adaptive": {
+          "caught": 0.02040816326530612,
+          "n": 98
+        }
+      }
+    },
+    "recipient": {
+      "pr_auc": 0.829609696091536,
+      "recall_at_p90": 0.7527839643652561,
+      "recall_at_p50": 0.8240534521158129,
+      "precision_at_r80": 0.5911330049261084,
+      "fraud_rate": 0.0022588694584750367,
+      "n": 198772,
+      "n_fraud": 449,
+      "precision_at_threshold": 0.9279778393351801,
+      "recall_at_threshold": 0.7461024498886414,
+      "false_alarms_per_10k": 1.3109926735678668,
+      "by_scenario": {
+        "account_takeover/adaptive": {
+          "caught": 0.9863481228668942,
+          "n": 293
+        },
+        "withdrawal_request/adaptive": {
+          "caught": 0.7758620689655172,
+          "n": 58
+        },
+        "wrong_transfer/adaptive": {
+          "caught": 0.01020408163265306,
+          "n": 98
+        }
+      }
+    },
+    "receiver": {
+      "pr_auc": 0.8544583790646704,
+      "recall_at_p90": 0.7572383073496659,
+      "recall_at_p50": 0.8552338530066815,
+      "precision_at_r80": 0.6963249516441006,
+      "fraud_rate": 0.0022588694584750367,
+      "n": 198772,
+      "n_fraud": 449,
+      "precision_at_threshold": 0.9335180055401662,
+      "recall_at_threshold": 0.7505567928730512,
+      "false_alarms_per_10k": 1.2101470832934154,
+      "by_scenario": {
+        "account_takeover/adaptive": {
+          "caught": 0.9897610921501706,
+          "n": 293
+        },
+        "withdrawal_request/adaptive": {
+          "caught": 0.7413793103448276,
+          "n": 58
+        },
+        "wrong_transfer/adaptive": {
+          "caught": 0.04081632653061224,
+          "n": 98
+        }
+      }
+    },
+    "agent": {
+      "pr_auc": 0.7624559678501278,
+      "recall_at_p90": 0.6592427616926503,
+      "recall_at_p50": 0.734966592427617,
+      "precision_at_r80": 0.2925445705024311,
+      "fraud_rate": 0.0022588694584750367,
+      "n": 198772,
+      "n_fraud": 449,
+      "precision_at_threshold": 0.878698224852071,
+      "recall_at_threshold": 0.6614699331848553,
+      "false_alarms_per_10k": 2.067334600626251,
+      "by_scenario": {
+        "account_takeover/adaptive": {
+          "caught": 0.9931740614334471,
+          "n": 293
+        },
+        "withdrawal_request/adaptive": {
+          "caught": 0.017241379310344827,
+          "n": 58
+        },
+        "wrong_transfer/adaptive": {
+          "caught": 0.05102040816326531,
+          "n": 98
+        }
+      }
+    }
+  },
+  "sensitivity": {
+    "Behavioural, trained on mixed fraud": {
+      "As simulated": 0.9931740614334471,
+      "Phone used on the account for a month first": 0.0,
+      "SIM swap / PIN reset a month earlier": 0.9556313993174061,
+      "Both of the above": 0.0,
+      "Both, and money sent to the victim's usual contacts": 0.0
+    },
+    "Behavioural, mixed fraud + adversarial copies": {
+      "As simulated": 1.0,
+      "Phone used on the account for a month first": 0.9863481228668942,
+      "SIM swap / PIN reset a month earlier": 0.36860068259385664,
+      "Both of the above": 0.3447098976109215,
+      "Both, and money sent to the victim's usual contacts": 0.0
+    }
+  }
+}

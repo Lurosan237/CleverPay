@@ -1,0 +1,58 @@
+{
+  "takeover: rush": {
+    "games": 6,
+    "mean_profit": -500.0,
+    "caught_rate": 1.0,
+    "mean_attempts": 1.0,
+    "never_flagged_rate": 0.0
+  },
+  "takeover: small amounts, straight away": {
+    "games": 6,
+    "mean_profit": -500.0,
+    "caught_rate": 1.0,
+    "mean_attempts": 1.1666666666666667,
+    "never_flagged_rate": 0.0
+  },
+  "takeover: wait 3 days, new number": {
+    "games": 6,
+    "mean_profit": -500.0,
+    "caught_rate": 1.0,
+    "mean_attempts": 1.5,
+    "never_flagged_rate": 0.0
+  },
+  "takeover: wait 3 days, rented account": {
+    "games": 6,
+    "mean_profit": 83666.66666666667,
+    "caught_rate": 0.0,
+    "mean_attempts": 20.0,
+    "never_flagged_rate": 1.0
+  },
+  "rogue agent: 100 requests in 10 min": {
+    "games": 6,
+    "mean_profit": 4166.666666666667,
+    "caught_rate": 1.0,
+    "mean_attempts": 4.333333333333333,
+    "never_flagged_rate": 0.0
+  },
+  "rogue agent: 10 local requests a day": {
+    "games": 6,
+    "mean_profit": 500.0,
+    "caught_rate": 0.0,
+    "mean_attempts": 0.8333333333333334,
+    "never_flagged_rate": 0.5
+  },
+  "sent by mistake: fresh numbers": {
+    "games": 6,
+    "mean_profit": -1500.0,
+    "caught_rate": 1.0,
+    "mean_attempts": 3.0,
+    "never_flagged_rate": 0.0
+  },
+  "sent by mistake: rented numbers": {
+    "games": 6,
+    "mean_profit": 59500.0,
+    "caught_rate": 0.0,
+    "mean_attempts": 14.0,
+    "never_flagged_rate": 1.0
+  }
+}

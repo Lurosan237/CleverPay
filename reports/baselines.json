@@ -1,0 +1,208 @@
+{
+  "Rule: transaction empties the sender's account": {
+    "features": "empties_account",
+    "validation": {
+      "pr_auc": 0.9886607661056298,
+      "recall_at_p90": 0.9875,
+      "recall_at_p50": 0.9875,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001327888988480563,
+      "n": 361476,
+      "n_fraud": 480
+    },
+    "test": {
+      "pr_auc": 0.9956804105982486,
+      "recall_at_p90": 0.9771084337349397,
+      "recall_at_p50": 0.9987951807228915,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001585400561957645,
+      "n": 523527,
+      "n_fraud": 830
+    },
+    "sparse_tail": {
+      "pr_auc": 0.996252770130057,
+      "recall_at_p90": 0.99642267473858,
+      "recall_at_p50": 0.99642267473858,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.023196879847311676,
+      "n": 156659,
+      "n_fraud": 3634
+    }
+  },
+  "Logistic regression (honest features)": {
+    "features": "honest",
+    "train_seconds": 1.6,
+    "validation": {
+      "pr_auc": 0.9892991682267017,
+      "recall_at_p90": 0.9875,
+      "recall_at_p50": 0.9875,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001327888988480563,
+      "n": 361476,
+      "n_fraud": 480
+    },
+    "test": {
+      "pr_auc": 0.9983525049136843,
+      "recall_at_p90": 1.0,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001585400561957645,
+      "n": 523527,
+      "n_fraud": 830
+    },
+    "sparse_tail": {
+      "pr_auc": 0.999403206305183,
+      "recall_at_p90": 0.9991744634012107,
+      "recall_at_p50": 0.999724821133737,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.023196879847311676,
+      "n": 156659,
+      "n_fraud": 3634
+    }
+  },
+  "LightGBM (honest features)": {
+    "features": "honest",
+    "train_seconds": 25.1,
+    "best_iteration": 108,
+    "validation": {
+      "pr_auc": 0.9999738855024185,
+      "recall_at_p90": 1.0,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001327888988480563,
+      "n": 361476,
+      "n_fraud": 480
+    },
+    "test": {
+      "pr_auc": 0.9973234579597691,
+      "recall_at_p90": 0.9987951807228915,
+      "recall_at_p50": 0.9987951807228915,
+      "precision_at_r80": 0.9975728155339806,
+      "fraud_rate": 0.001585400561957645,
+      "n": 523527,
+      "n_fraud": 830
+    },
+    "sparse_tail": {
+      "pr_auc": 0.9997191995474567,
+      "recall_at_p90": 0.999724821133737,
+      "recall_at_p50": 0.999724821133737,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.023196879847311676,
+      "n": 156659,
+      "n_fraud": 3634
+    },
+    "evasion_caught": {
+      "100%": 0.9987951807228915,
+      "95%": 0.04216867469879518,
+      "90%": 0.03855421686746988,
+      "70%": 0.06506024096385542,
+      "50%": 0.03614457831325301
+    },
+    "gain_importance": {
+      "log_dest_balance_before": 0.759,
+      "log_amount": 0.093,
+      "log_orig_balance_before": 0.072,
+      "amount_to_balance": 0.051,
+      "is_transfer": 0.019,
+      "empties_account": 0.003,
+      "dest_empty_before": 0.003,
+      "amount_is_round": 0.0
+    }
+  },
+  "LightGBM, class-weighted (honest features)": {
+    "features": "honest",
+    "train_seconds": 13.5,
+    "best_iteration": 4,
+    "validation": {
+      "pr_auc": 1.0,
+      "recall_at_p90": 1.0,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001327888988480563,
+      "n": 361476,
+      "n_fraud": 480
+    },
+    "test": {
+      "pr_auc": 0.999979582425135,
+      "recall_at_p90": 1.0,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001585400561957645,
+      "n": 523527,
+      "n_fraud": 830
+    },
+    "sparse_tail": {
+      "pr_auc": 0.9999557232913563,
+      "recall_at_p90": 0.999724821133737,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.023196879847311676,
+      "n": 156659,
+      "n_fraud": 3634
+    }
+  },
+  "LightGBM (leaky features, for comparison)": {
+    "features": "leaky",
+    "train_seconds": 15.1,
+    "best_iteration": 10,
+    "validation": {
+      "pr_auc": 1.0,
+      "recall_at_p90": 1.0,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.001327888988480563,
+      "n": 361476,
+      "n_fraud": 480
+    },
+    "test": {
+      "pr_auc": 0.998343001789214,
+      "recall_at_p90": 1.0,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 0.9987951807228915,
+      "fraud_rate": 0.001585400561957645,
+      "n": 523527,
+      "n_fraud": 830
+    },
+    "sparse_tail": {
+      "pr_auc": 0.9999872668502978,
+      "recall_at_p90": 1.0,
+      "recall_at_p50": 1.0,
+      "precision_at_r80": 1.0,
+      "fraud_rate": 0.023196879847311676,
+      "n": 156659,
+      "n_fraud": 3634
+    }
+  },
+  "LightGBM without the sender's balance": {
+    "features": "no_sender_balance",
+    "train_seconds": 14.0,
+    "best_iteration": 20,
+    "validation": {
+      "pr_auc": 0.1117191321155968,
+      "recall_at_p90": 0.08541666666666667,
+      "recall_at_p50": 0.08541666666666667,
+      "precision_at_r80": 0.006521156038355797,
+      "fraud_rate": 0.001327888988480563,
+      "n": 361476,
+      "n_fraud": 480
+    },
+    "test": {
+      "pr_auc": 0.19646644767615887,
+      "recall_at_p90": 0.0,
+      "recall_at_p50": 0.18433734939759036,
+      "precision_at_r80": 0.008164144799846772,
+      "fraud_rate": 0.001585400561957645,
+      "n": 523527,
+      "n_fraud": 830
+    },
+    "sparse_tail": {
+      "pr_auc": 0.5054006046739039,
+      "recall_at_p90": 0.18244358833241606,
+      "recall_at_p50": 0.46725371491469453,
+      "precision_at_r80": 0.09920860186329182,
+      "fraud_rate": 0.023196879847311676,
+      "n": 156659,
+      "n_fraud": 3634
+    }
+  }
+}
