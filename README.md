@@ -1,7 +1,10 @@
-# MoMo Fraud Game
+# CleverPay
 
 *Can you scam the model?* A mobile money fraud detector, served as a game where you play
 the fraudster.
+
+The project is named after CleverPay, the fictional mobile money brand in the game. The Python
+package is `momofraud`, short for mobile money fraud.
 
 > **Try it:** https://lurosan237.github.io/CleverPay/ (Model Lab, the Launch Day game and the
 > classic game, all running in your browser).
