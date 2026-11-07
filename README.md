@@ -377,9 +377,12 @@ you use every method.
 
 ## Method
 
-- **Time-based split**: train on days 0-11, validate on days 12-13, test once on days 14-16.
-  Never a random split: the model is always tested on transactions that come after the ones it
-  learned from. Days 17-30 have a very different fraud rate and are kept as a stress test.
+- **Time-based split**, never a random one: the model is always tested on transactions that come
+  after the ones it learned from.
+  - Stage 1 (PaySim): train on days 0-11, validate on days 12-13, test once on days 14-16. Days
+    17-30 have a very different fraud rate and are kept as a stress test.
+  - Stages 2-7 (simulated worlds, 90 days each): train on days 0-59, validate on days 60-74, test
+    once on days 75-89.
 - **Metrics for rare events**: PR-AUC, recall at 90% precision, precision at 80% recall.
   Accuracy is useless at a 0.16% fraud rate.
 - **Alert thresholds** are chosen on the validation set, never on the test set.
